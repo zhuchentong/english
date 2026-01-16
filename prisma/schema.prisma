@@ -10,22 +10,162 @@ datasource db {
   provider = "postgresql"
 }
 
+// ============================================================================
+// USER MODELS
+// ============================================================================
+
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
+  id        Int        @id @default(autoincrement())
+  email     String     @unique
   name      String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  posts     Post[]
+  password  String?
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  userWords   UserWord[]
+  wordLists   WordList[]
+  favorites   Favorite[]
 }
 
-model Post {
+// ============================================================================
+// WORD MANAGEMENT MODELS
+// ============================================================================
+
+model Word {
+  id          Int        @id @default(autoincrement())
+  word        String     @unique  // 单词拼写
+  phoneticUK  String?    // 英式音标：/ɪkˈskjuːz/
+  phoneticUS  String?    // 美式音标：/ɪkˈskjuːs/
+  difficulty  Int        @default(1) // 难度等级：1-5
+  viewCount   Int        @default(0) // 查看次数
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  definitions Definition[]
+  examples   ExampleSentence[]
+  tags       WordTag[]
+  userWords  UserWord[]
+  favorites  Favorite[]
+  wordLists  WordListItem[]
+
+  @@index([word])
+  @@index([difficulty])
+}
+
+model Definition {
+  id            Int      @id @default(autoincrement())
+  wordId        Int
+  partOfSpeech  String?  // 词性：n., v., adj., adv., etc.
+  translation   String?  // 中文翻译/释义
+  englishDef    String?  // 英文释义
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  word  Word   @relation(fields: [wordId], references: [id], onDelete: Cascade)
+
+  @@index([wordId])
+}
+
+model ExampleSentence {
+  id             Int      @id @default(autoincrement())
+  wordId         Int
+  cnSentence     String?  // 中文例句
+  originSentence String?  // 英文例句
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  word Word @relation(fields: [wordId], references: [id], onDelete: Cascade)
+
+  @@index([wordId])
+}
+
+model Tag {
+  id          Int        @id @default(autoincrement())
+  name        String     @unique  // 标签名称
+  description String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  words WordTag[]
+}
+
+model WordTag {
+  wordId Int
+  tagId  Int
+
+  word Word @relation(fields: [wordId], references: [id], onDelete: Cascade)
+  tag  Tag  @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([wordId, tagId])
+  @@index([wordId])
+  @@index([tagId])
+}
+
+// ============================================================================
+// USER LEARNING MODELS
+// ============================================================================
+
+model UserWord {
+  id             Int        @id @default(autoincrement())
+  userId         Int
+  wordId         Int
+  masteryLevel   Int        @default(0) // 掌握程度：0-5
+  reviewCount    Int        @default(0) // 复习次数
+  lastReviewAt   DateTime?
+  nextReviewAt   DateTime?
+  isFavorite     Boolean    @default(false)
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  word Word @relation(fields: [wordId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, wordId])
+  @@index([userId])
+  @@index([wordId])
+  @@index([nextReviewAt])
+}
+
+model WordList {
+  id          Int        @id @default(autoincrement())
+  userId      Int
+  name        String     // 单词本名称
+  description String?    // 描述
+  isPublic    Boolean    @default(false) // 是否公开
+  wordCount   Int        @default(0) // 单词数量
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  user    User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items   WordListItem[]
+
+  @@index([userId])
+}
+
+model WordListItem {
   id        Int      @id @default(autoincrement())
-  title     String
-  content   String?
-  published Boolean  @default(false)
+  wordListId Int
+  wordId     Int
+  addedAt    DateTime @default(now())
+
+  wordList WordList @relation(fields: [wordListId], references: [id], onDelete: Cascade)
+  word     Word     @relation(fields: [wordId], references: [id], onDelete: Cascade)
+
+  @@unique([wordListId, wordId])
+  @@index([wordListId])
+  @@index([wordId])
+}
+
+model Favorite {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  wordId    Int
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  author    User     @relation(fields: [authorId], references: [id])
-  authorId  Int
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  word Word @relation(fields: [wordId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, wordId])
+  @@index([userId])
+  @@index([wordId])
 }
