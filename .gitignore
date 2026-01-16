@@ -24,3 +24,9 @@ logs
 !.env.example
 
 /app/generated/prisma
+
+# Test coverage and results
+coverage
+test-results
+playwright-report
+
