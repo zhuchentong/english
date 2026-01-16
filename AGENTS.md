@@ -57,11 +57,12 @@
 - `server/utils/` 中的工具函数自动导入（包括 Prisma 客户端）
 
 ### 数据库 (Prisma)
-- **Provider**: SQLite (dev.db, 开发环境)
+- **Provider**: PostgreSQL (远程数据库)
 - **ORM**: Prisma 7.2.0
 - **Prisma Client**: 自动导入，通过 `prisma` 全局可用
 - **模式定义**: `prisma/schema.prisma`
 - **迁移**: 使用 `pnpm prisma:migrate` 或 `pnpm prisma:push`
+- **环境变量**: `DATABASE_URL` 配置在 `.env` 文件中
 
 ### 包管理器
 - **pnpm** (pnpm-lock.yaml v9.0)
