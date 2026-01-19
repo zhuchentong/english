@@ -1,5 +1,4 @@
 import { defineConfig } from 'vitest/config'
-import { defineVitestProject } from '@nuxt/test-utils/config'
 import { fileURLToPath } from 'node:url'
 
 export default defineConfig({
@@ -30,50 +29,13 @@ export default defineConfig({
         'coverage/',
       ],
     },
-    include: ['**/*.{test,spec}.{ts,js}'],
+    include: [
+      '**/*.{test,spec}.{ts,js}',
+      'test/**/*.{test,spec}.{ts,js}',
+      'server/__tests__/**/*.{test,spec}.{ts,js}',
+      'app/__tests__/**/*.{test,spec}.{ts,js}',
+    ],
     exclude: ['node_modules', '.nuxt', 'dist', 'test/e2e/**', '**/*.e2e.{ts,js}'],
     reporters: ['verbose'],
   },
-  projects: [
-    // Unit tests - Node environment, fast execution
-    {
-      test: {
-        name: 'unit',
-        include: [
-          'test/unit/**/*.{test,spec}.{ts,js}',
-          'server/__tests__/utils/**/*.{test,spec}.{ts,js}',
-        ],
-        environment: 'node',
-      },
-    },
-    // Server/API tests - Node environment
-    {
-      test: {
-        name: 'server',
-        include: ['server/__tests__/api/**/*.{test,spec}.{ts,js}'],
-        environment: 'node',
-      },
-    },
-    // Nuxt runtime tests - Full Nuxt environment
-    await defineVitestProject({
-      test: {
-        name: 'nuxt',
-        include: [
-          'test/nuxt/**/*.{test,spec}.{ts,js}',
-          'app/__tests__/**/*.{test,spec}.{ts,js}',
-        ],
-        environment: 'nuxt',
-        environmentOptions: {
-          nuxt: {
-            rootDir: fileURLToPath(new URL('.', import.meta.url)),
-            domEnvironment: 'happy-dom',
-            mock: {
-              intersectionObserver: true,
-              indexedDb: false,
-            },
-          },
-        },
-      },
-    }),
-  ],
 })
