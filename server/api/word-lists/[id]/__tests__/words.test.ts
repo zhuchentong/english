@@ -70,7 +70,7 @@ describe('Word List Words API (GET /api/word-lists/:id/words)', () => {
 
   it('should return 404 when word list does not exist', async () => {
     const event = new Request('http://localhost:3000/api/word-lists/99999/words')
-    const handler = (await import('../../[id]/words.get.ts')).default
+    const handler = (await import('../../[id]/words.get')).default
 
     await expect(handler(event)).rejects.toMatchObject({
       statusCode: 404,
