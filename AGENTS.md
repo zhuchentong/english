@@ -52,16 +52,46 @@ pnpm lint:fix         # 自动修复 ESLint 问题
 - **测试文件**: 与被测文件同级或 `__tests__` 目录，后缀 `.test.ts`
 
 ### 导入规范
+
+#### AutoImport 方案 (Nuxt 4)
+项目采用 Nuxt 4 AutoImport 方案，优先使用自动导入：
+
 ```typescript
-// ✅ 使用路径别名
+// ✅ Vue SFC (.vue 文件) - 自动导入
+<script setup lang="ts">
+const count = ref(1)
+const double = computed(() => count.value * 2)
+const route = useRoute()
+const router = useRouter()
+</script>
+
+// ✅ Composables 文件 - 自动导入
+// app/composables/useWorkspace.ts
+export const useWorkspace = () => {
+  const isCollapsed = ref(false)
+  return { isCollapsed }
+}
+
+// ✅ 路径别名导入（非自动导入的内容）
 import { prisma } from '@/server/utils/db'
 import { Word } from '@/prisma'
-import { ref, computed } from 'vue'
+import WsHeader from '@/components/workspace/WsHeader.vue'
+
 // ❌ 避免相对路径
 import { prisma } from '../../../server/utils/db'
+
+// ❌ 严禁显式导入 Vue API（已自动导入）
+// import { ref, computed } from 'vue'
+// import { useRoute, useRouter } from 'vue-router'
 ```
 
 **路径别名**: `@/` → `app/`, `@@/` → 根目录, `@/prisma` → `app/generated/prisma/`, `@/server` → `server/`
+
+**自动导入列表**：
+- Vue APIs: `ref`, `computed`, `watch`, `reactive`, `onMounted`, etc.
+- Vue Router: `useRoute`, `useRouter`, `navigateTo`
+- Nuxt Composables: `useFetch`, `useState`, `useRuntimeConfig`, etc.
+- 自定义 Composables: `app/composables/` 下的所有函数自动导入
 
 ### TypeScript 类型
 ```typescript
@@ -165,6 +195,7 @@ const client1 = new PrismaClient()
 - ❌ 在 app.vue 中直接渲染内容而不使用 `<NuxtLayout>` (应使用工作区布局)
 - ❌ TDesign Table 组件缺少 `row-key` 属性
 - ❌ 侧边栏 Menu 使用 `v-model:value` 绑定 computed 只读属性（应使用 `:value`）
+- ❌ 显式导入 Vue API（`import { ref, computed } from 'vue'` 或 `import { useRoute } from 'vue-router'`，应使用 AutoImport）
 
 ## 项目独特风格
 

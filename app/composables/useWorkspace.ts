@@ -1,5 +1,3 @@
-import { ref } from 'vue'
-
 export const useWorkspace = () => {
   const isCollapsed = ref(false)
 

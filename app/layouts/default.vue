@@ -9,14 +9,15 @@
         <WsSidebar />
       </t-aside>
 
-      <t-content class="ws-content">
-        <slot />
-      </t-content>
+      <t-layout>
+        <t-content class="ws-content">
+          <slot />
+        </t-content>
+        <t-footer>
+          <WsFooter />
+        </t-footer>
+      </t-layout>
     </t-layout>
-
-    <t-footer>
-      <WsFooter />
-    </t-footer>
   </t-layout>
 </template>
 
@@ -42,7 +43,7 @@ import WsFooter from '../components/workspace/WsFooter.vue'
   background-color: #f5f5f5;
 }
 
-:deep(.t-layout__footer){
+:deep(.t-layout__footer) {
   padding: 0;
 }
 </style>

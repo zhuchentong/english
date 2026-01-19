@@ -81,6 +81,12 @@ importers:
       unocss:
         specifier: ^66.6.0
         version: 66.6.0(@unocss/webpack@66.6.0(webpack@5.104.1(esbuild@0.27.2)))(postcss@8.5.6)(vite@7.3.1(@types/node@25.0.9)(jiti@2.6.1)(terser@5.46.0)(tsx@4.21.0)(yaml@2.8.2))
+      unplugin-auto-import:
+        specifier: ^21.0.0
+        version: 21.0.0(@nuxt/kit@4.2.2(magicast@0.5.1))
+      vite-tsconfig-paths:
+        specifier: ^6.0.4
+        version: 6.0.4(typescript@5.9.3)(vite@7.3.1(@types/node@25.0.9)(jiti@2.6.1)(terser@5.46.0)(tsx@4.21.0)(yaml@2.8.2))
       vitest:
         specifier: ^4.0.17
         version: 4.0.17(@types/node@25.0.9)(@vitest/ui@4.0.17)(happy-dom@20.3.1)(jiti@2.6.1)(terser@5.46.0)(tsx@4.21.0)(yaml@2.8.2)
@@ -2960,6 +2966,9 @@ packages:
     resolution: {integrity: sha512-+A4Hq7m7Ze592k9gZRy4gJ27DrXRNnC1vPjxTt1qQxEY8RxagBkBxivkCwg7FxSTG0iLLEMaUx13oOr0R2/qcQ==}
     engines: {node: '>=20'}
 
+  globrex@0.1.2:
+    resolution: {integrity: sha512-uHJgbwAMwNFf5mLst7IWLNg14x1CkeqglJb/K3doi4dw6q2IvAAmM/Y81kevy83wP+Sst+nutFTYOGg3d1lsxg==}
+
   graceful-fs@4.2.11:
     resolution: {integrity: sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==}
 
@@ -4506,6 +4515,16 @@ packages:
     peerDependencies:
       typescript: '>=4.8.4'
 
+  tsconfck@3.1.6:
+    resolution: {integrity: sha512-ks6Vjr/jEw0P1gmOVwutM3B7fWxoWBL2KRDb1JfqGVawBmO5UsvmWOQFGHBPl5yxYz4eERr19E6L7NMv+Fej4w==}
+    engines: {node: ^18 || >=20}
+    hasBin: true
+    peerDependencies:
+      typescript: ^5.0.0
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+
   tslib@2.8.1:
     resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
 
@@ -4586,6 +4605,18 @@ packages:
       '@unocss/webpack':
         optional: true
       vite:
+        optional: true
+
+  unplugin-auto-import@21.0.0:
+    resolution: {integrity: sha512-vWuC8SwqJmxZFYwPojhOhOXDb5xFhNNcEVb9K/RFkyk/3VnfaOjzitWN7v+8DEKpMjSsY2AEGXNgt6I0yQrhRQ==}
+    engines: {node: '>=20.19.0'}
+    peerDependencies:
+      '@nuxt/kit': ^4.0.0
+      '@vueuse/core': '*'
+    peerDependenciesMeta:
+      '@nuxt/kit':
+        optional: true
+      '@vueuse/core':
         optional: true
 
   unplugin-utils@0.2.5:
@@ -4779,6 +4810,14 @@ packages:
     peerDependencies:
       vite: ^6.0.0 || ^7.0.0
       vue: ^3.5.0
+
+  vite-tsconfig-paths@6.0.4:
+    resolution: {integrity: sha512-iIsEJ+ek5KqRTK17pmxtgIxXtqr3qDdE6OxrP9mVeGhVDNXRJTKN/l9oMbujTQNzMLe6XZ8qmpztfbkPu2TiFQ==}
+    peerDependencies:
+      vite: '*'
+    peerDependenciesMeta:
+      vite:
+        optional: true
 
   vite@7.3.1:
     resolution: {integrity: sha512-w+N7Hifpc3gRjZ63vYBXA56dvvRlNWRczTdmCBBa+CotUzAPf5b7YMdMR/8CQoeYE5LX3W4wj6RYTgonm1b9DA==}
@@ -8218,6 +8257,8 @@ snapshots:
       slash: 5.1.0
       unicorn-magic: 0.4.0
 
+  globrex@0.1.2: {}
+
   graceful-fs@4.2.11: {}
 
   grammex@3.1.12: {}
@@ -9919,6 +9960,10 @@ snapshots:
     dependencies:
       typescript: 5.9.3
 
+  tsconfck@3.1.6(typescript@5.9.3):
+    optionalDependencies:
+      typescript: 5.9.3
+
   tslib@2.8.1:
     optional: true
 
@@ -10029,6 +10074,17 @@ snapshots:
     transitivePeerDependencies:
       - postcss
       - supports-color
+
+  unplugin-auto-import@21.0.0(@nuxt/kit@4.2.2(magicast@0.5.1)):
+    dependencies:
+      local-pkg: 1.1.2
+      magic-string: 0.30.21
+      picomatch: 4.0.3
+      unimport: 5.6.0
+      unplugin: 2.3.11
+      unplugin-utils: 0.3.1
+    optionalDependencies:
+      '@nuxt/kit': 4.2.2(magicast@0.5.1)
 
   unplugin-utils@0.2.5:
     dependencies:
@@ -10226,6 +10282,17 @@ snapshots:
       source-map-js: 1.2.1
       vite: 7.3.1(@types/node@25.0.9)(jiti@2.6.1)(terser@5.46.0)(tsx@4.21.0)(yaml@2.8.2)
       vue: 3.5.26(typescript@5.9.3)
+
+  vite-tsconfig-paths@6.0.4(typescript@5.9.3)(vite@7.3.1(@types/node@25.0.9)(jiti@2.6.1)(terser@5.46.0)(tsx@4.21.0)(yaml@2.8.2)):
+    dependencies:
+      debug: 4.4.3
+      globrex: 0.1.2
+      tsconfck: 3.1.6(typescript@5.9.3)
+    optionalDependencies:
+      vite: 7.3.1(@types/node@25.0.9)(jiti@2.6.1)(terser@5.46.0)(tsx@4.21.0)(yaml@2.8.2)
+    transitivePeerDependencies:
+      - supports-color
+      - typescript
 
   vite@7.3.1(@types/node@25.0.9)(jiti@2.6.1)(terser@5.46.0)(tsx@4.21.0)(yaml@2.8.2):
     dependencies:
