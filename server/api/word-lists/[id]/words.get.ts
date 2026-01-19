@@ -4,21 +4,21 @@ export default defineEventHandler(async (event) => {
   try {
     const id = Number(event.context.params?.id)
 
-    if (isNaN(id)) {
+    if (Number.isNaN(id)) {
       throw createError({
         statusCode: 400,
-        statusMessage: 'Invalid word list ID'
+        statusMessage: 'Invalid word list ID',
       })
     }
 
     const wordListExists = await prisma.wordList.findUnique({
-      where: { id }
+      where: { id },
     })
 
     if (!wordListExists) {
       throw createError({
         statusCode: 404,
-        statusMessage: 'Word list not found'
+        statusMessage: 'Word list not found',
       })
     }
 
@@ -33,7 +33,7 @@ export default defineEventHandler(async (event) => {
         skip,
         take: pageSize,
         where: {
-          wordListId: id
+          wordListId: id,
         },
         include: {
           word: {
@@ -43,25 +43,25 @@ export default defineEventHandler(async (event) => {
               phoneticUK: true,
               phoneticUS: true,
               difficulty: true,
-              viewCount: true
-            }
-          }
+              viewCount: true,
+            },
+          },
         },
         orderBy: {
-          addedAt: 'desc'
-        }
+          addedAt: 'desc',
+        },
       }),
       prisma.wordListItem.count({
         where: {
-          wordListId: id
-        }
-      })
+          wordListId: id,
+        },
+      }),
     ])
 
     const data = items.map(item => ({
       ...item.word,
       itemId: item.id,
-      addedAt: item.addedAt.toISOString()
+      addedAt: item.addedAt.toISOString(),
     }))
 
     const totalPages = Math.ceil(total / pageSize)
@@ -72,17 +72,18 @@ export default defineEventHandler(async (event) => {
         total,
         page,
         pageSize,
-        totalPages
-      }
+        totalPages,
+      },
     }
-  } catch (error) {
+  }
+  catch (error) {
     if (error instanceof Error && 'statusCode' in error) {
       throw error
     }
 
     throw createError({
       statusCode: 500,
-      statusMessage: 'Failed to fetch words from word list'
+      statusMessage: 'Failed to fetch words from word list',
     })
   }
 })

@@ -1,7 +1,7 @@
-import { config } from 'dotenv'
+import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { join, dirname } from 'node:path'
-import { defineEventHandler, getQuery, createError } from 'h3'
+import { config } from 'dotenv'
+import { createError, defineEventHandler, getQuery } from 'h3'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -10,6 +10,6 @@ const __dirname = dirname(__filename)
 config({ path: join(__dirname, '.env') })
 
 // Set up globals for Nuxt server API tests
-global.defineEventHandler = defineEventHandler
-global.getQuery = getQuery
-global.createError = createError
+globalThis.defineEventHandler = defineEventHandler
+globalThis.getQuery = getQuery
+globalThis.createError = createError

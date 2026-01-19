@@ -28,7 +28,7 @@ test.describe('Application E2E Tests', () => {
     expect(title).toBeDefined()
   })
 
-  test('should handle 404 pages gracefully', async ({ page, goto }) => {
+  test('should handle 404 pages gracefully', async ({ page }) => {
     const response = await page.goto('/non-existent-page')
     // In Nuxt, this should return a 404 status
     // This test may fail initially if 404 handling isn't set up

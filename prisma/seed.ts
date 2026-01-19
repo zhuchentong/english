@@ -1,8 +1,9 @@
-import { PrismaClient } from '../app/generated/prisma/client'
-import { Pool } from 'pg'
+import fs from 'node:fs'
+import path from 'node:path'
+import process from 'node:process'
 import { PrismaPg } from '@prisma/adapter-pg'
-import fs from 'fs'
-import path from 'path'
+import { Pool } from 'pg'
+import { PrismaClient } from '../app/generated/prisma/client'
 
 const connectionString = process.env.DATABASE_URL!
 const pool = new Pool({ connectionString })
@@ -34,7 +35,8 @@ function parseCSV(filePath: string): CSVRow[] {
 
   // 解析数据行
   for (let i = 1; i < lines.length; i++) {
-    if (lines[i].trim() === '') continue
+    if (lines[i].trim() === '')
+      continue
 
     const values = parseCSVLine(lines[i])
     const row: any = {}
@@ -62,13 +64,16 @@ function parseCSVLine(line: string): string[] {
       if (inQuotes && line[i + 1] === '"') {
         current += '"'
         i++
-      } else {
+      }
+      else {
         inQuotes = !inQuotes
       }
-    } else if (char === ',' && !inQuotes) {
+    }
+    else if (char === ',' && !inQuotes) {
       result.push(current)
       current = ''
-    } else {
+    }
+    else {
       current += char
     }
   }
@@ -78,26 +83,27 @@ function parseCSVLine(line: string): string[] {
 }
 
 // 解析音标 JSON
-function parsePhonetic(phoneticStr: string): { uk?: string; us?: string } {
+function parsePhonetic(phoneticStr: string): { uk?: string, us?: string } {
   try {
-    const phonetic = JSON.parse(phoneticStr) as { uk?: string; us?: string }
+    const phonetic = JSON.parse(phoneticStr) as { uk?: string, us?: string }
     return {
       uk: phonetic.uk || undefined,
       us: phonetic.us || undefined,
     }
-  } catch {
+  }
+  catch {
     return {}
   }
 }
 
 // 解析翻译，拆分词性和释义
-function parseTranslation(translation: string): Array<{ partOfSpeech?: string; translation: string }> {
-  const results: Array<{ partOfSpeech?: string; translation: string }> = []
+function parseTranslation(translation: string): Array<{ partOfSpeech?: string, translation: string }> {
+  const results: Array<{ partOfSpeech?: string, translation: string }> = []
 
   // 分割多个释义（使用分号）
   const parts = translation.split(';').map(p => p.trim()).filter(p => p)
 
-  parts.forEach(part => {
+  parts.forEach((part) => {
     // 检查是否包含词性标记（如 "v.", "n.", "adj." 等）
     const posMatch = part.match(/^(n\.|v\.|adj\.|adv\.|pron\.|prep\.|conj\.|int\.|num\.|vt\.|vi\.|phr\.)/i)
 
@@ -107,7 +113,8 @@ function parseTranslation(translation: string): Array<{ partOfSpeech?: string; t
       if (trans) {
         results.push({ partOfSpeech: pos, translation: trans })
       }
-    } else {
+    }
+    else {
       // 没有词性标记，直接作为释义
       results.push({ translation: part })
     }
@@ -117,14 +124,15 @@ function parseTranslation(translation: string): Array<{ partOfSpeech?: string; t
 }
 
 // 解析例句 JSON
-function parseSentences(sentenceStr: string): Array<{ cnSentence: string; originSentence: string }> {
+function parseSentences(sentenceStr: string): Array<{ cnSentence: string, originSentence: string }> {
   try {
-    const sentences = JSON.parse(sentenceStr) as Array<{ cn_sentence: string; origin_sentence: string }>
+    const sentences = JSON.parse(sentenceStr) as Array<{ cn_sentence: string, origin_sentence: string }>
     return sentences.map(s => ({
       cnSentence: s.cn_sentence,
       originSentence: s.origin_sentence,
     }))
-  } catch {
+  }
+  catch {
     return []
   }
 }
@@ -143,7 +151,8 @@ async function createDefaultUser() {
       },
     })
     console.log(`✓ 创建默认用户: ${user.name} (ID: ${user.id})`)
-  } else {
+  }
+  else {
     console.log(`✓ 使用已存在的用户: ${user.name} (ID: ${user.id})`)
   }
 
@@ -183,7 +192,7 @@ async function importWords() {
 
   let successCount = 0
   let errorCount = 0
-  const errors: Array<{ word: string; error: string }> = []
+  const errors: Array<{ word: string, error: string }> = []
 
   for (const row of rows) {
     try {
@@ -235,7 +244,8 @@ async function importWords() {
 
       successCount++
       console.log(`✓ 导入成功: ${row.word}`)
-    } catch (error) {
+    }
+    catch (error) {
       errorCount++
       const errorMsg = error instanceof Error ? error.message : 'Unknown error'
       errors.push({ word: row.word, error: errorMsg })
@@ -256,7 +266,7 @@ async function importWords() {
 
   if (errors.length > 0) {
     console.log('\n错误详情:')
-    errors.forEach(err => {
+    errors.forEach((err) => {
       console.log(`  ${err.word}: ${err.error}`)
     })
   }
@@ -291,10 +301,12 @@ async function main() {
     await new Promise(resolve => setTimeout(resolve, 1000))
     // 导入数据
     await importWords()
-  } catch (error) {
+  }
+  catch (error) {
     console.error('导入过程中发生错误:', error)
     process.exit(1)
-  } finally {
+  }
+  finally {
     await prisma.$disconnect()
     await pool.end()
   }

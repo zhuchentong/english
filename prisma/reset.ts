@@ -1,6 +1,7 @@
-import { PrismaClient } from '../app/generated/prisma/client'
-import { Pool } from 'pg'
+import process from 'node:process'
 import { PrismaPg } from '@prisma/adapter-pg'
+import { Pool } from 'pg'
+import { PrismaClient } from '../app/generated/prisma/client'
 
 const connectionString = process.env.DATABASE_URL!
 
@@ -32,10 +33,12 @@ async function main() {
 
   try {
     await resetDatabase(prisma)
-  } catch (error) {
+  }
+  catch (error) {
     console.error('重置过程中发生错误:', error)
     process.exit(1)
-  } finally {
+  }
+  finally {
     await prisma.$disconnect()
     await pool.end()
   }

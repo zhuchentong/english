@@ -9,9 +9,9 @@
  * Once compatibility is resolved, tests using mountSuspended will be added here.
  */
 
-import { describe, it, expect } from 'vitest'
+import { describe, expect, it } from 'vitest'
 
-describe('Nuxt Runtime Environment', () => {
+describe('nuxt Runtime Environment', () => {
   it('should have TypeScript types available', () => {
     // Verify Nuxt composables are typed (will fail if types aren't loaded)
     // This is a compile-time check - if it compiles, types are working

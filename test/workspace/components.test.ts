@@ -7,24 +7,24 @@
  * tests will be added once @nuxt/test-utils supports vitest 4.x.
  */
 
-import { describe, it, expect } from 'vitest'
-import { existsSync } from 'fs'
+import { existsSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
+import { describe, expect, it } from 'vitest'
 
-describe('Workspace Components', () => {
+describe('workspace Components', () => {
   const appDir = fileURLToPath(new URL('../../app', import.meta.url))
 
-  it('WsHeader component file should exist', () => {
+  it('wsHeader component file should exist', () => {
     const filePath = `${appDir}/components/workspace/WsHeader.vue`
     expect(existsSync(filePath)).toBe(true)
   })
 
-  it('WsSidebar component file should exist', () => {
+  it('wsSidebar component file should exist', () => {
     const filePath = `${appDir}/components/workspace/WsSidebar.vue`
     expect(existsSync(filePath)).toBe(true)
   })
 
-  it('WsFooter component file should exist', () => {
+  it('wsFooter component file should exist', () => {
     const filePath = `${appDir}/components/workspace/WsFooter.vue`
     expect(existsSync(filePath)).toBe(true)
   })

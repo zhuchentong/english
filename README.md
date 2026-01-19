@@ -7,18 +7,21 @@ A modern English vocabulary management and learning system built with Nuxt 4, Vu
 **Current Phase:** Development - Database Schema Complete
 
 ### ✅ Completed
+
 - Nuxt 4.2.2 + Vue 3.5.26 + TypeScript setup
 - PostgreSQL database with Prisma 7.2.0 ORM
 - Development environment configured (ESLint 9, pnpm)
 - Database schema designed for vocabulary management (Word, Definition, Example, UserWord, WordList, Tag)
 
 ### 🚧 In Development
+
 - CRUD operations for word management
 - User interface components
 - Flashcard system with spaced repetition
 - User authentication
 
 ### 📅 Planned
+
 - Advanced learning analytics
 - Audio pronunciation support
 - Import/export vocabulary
@@ -27,6 +30,7 @@ A modern English vocabulary management and learning system built with Nuxt 4, Vu
 ## 🎯 Features
 
 ### Core Functionality
+
 - **Vocabulary Management**
   - Add, edit, and delete words
   - Rich definitions with multiple meanings
@@ -54,6 +58,7 @@ A modern English vocabulary management and learning system built with Nuxt 4, Vu
 ## 🛠️ Tech Stack
 
 ### Frontend
+
 - **Framework**: Nuxt 4.2.2 (Vue 3.5.26)
 - **Language**: TypeScript 5.x
 - **Routing**: Vue Router 4.6.4
@@ -61,12 +66,14 @@ A modern English vocabulary management and learning system built with Nuxt 4, Vu
 - **Package Manager**: pnpm 9.x
 
 ### Backend
+
 - **API**: Nuxt Server (H3)
 - **Database**: PostgreSQL
 - **ORM**: Prisma 7.2.0
 - **Type Safety**: Full TypeScript integration
 
 ### Development Tools
+
 - **Hot Reload**: Vite development server
 - **Type Generation**: Prisma Client auto-generated types
 - **Database GUI**: Prisma Studio
@@ -99,7 +106,7 @@ english/
 ├── .gitignore                    # Git ignore rules
 ├── AGENTS.md                     # Project documentation (Chinese)
 ├── README.md                     # This file
-├── eslint.config.mjs            # ESLint flat configuration
+├── eslint.config.js            # ESLint flat configuration
 ├── nuxt.config.ts               # Nuxt 4 configuration
 ├── package.json                 # Dependencies & scripts
 ├── pnpm-lock.yaml              # Lock file
@@ -112,6 +119,7 @@ english/
 ### Prerequisites
 
 Before you begin, ensure you have the following installed:
+
 - Node.js 18.x or higher
 - PostgreSQL 14.x or higher
 - pnpm 9.x or higher
@@ -119,12 +127,14 @@ Before you begin, ensure you have the following installed:
 ### Installation
 
 1. **Clone the repository**
+
    ```bash
    git clone <repository-url>
    cd english
    ```
 
 2. **Install dependencies**
+
    ```bash
    pnpm install
    ```
@@ -172,6 +182,7 @@ Before you begin, ensure you have the following installed:
 The vocabulary management system uses the following models designed for English word learning:
 
 #### User Model
+
 ```prisma
 model User {
   id        Int        @id @default(autoincrement())
@@ -188,6 +199,7 @@ model User {
 ```
 
 #### Word Model
+
 ```prisma
 model Word {
   id          Int        @id @default(autoincrement())
@@ -208,6 +220,7 @@ model Word {
 ```
 
 #### Definition Model
+
 ```prisma
 model Definition {
   id            Int      @id @default(autoincrement())
@@ -223,6 +236,7 @@ model Definition {
 ```
 
 #### ExampleSentence Model
+
 ```prisma
 model ExampleSentence {
   id             Int      @id @default(autoincrement())
@@ -237,6 +251,7 @@ model ExampleSentence {
 ```
 
 #### UserWord Model (Learning Progress)
+
 ```prisma
 model UserWord {
   id             Int        @id @default(autoincrement())
@@ -258,6 +273,7 @@ model UserWord {
 ```
 
 #### WordList & Tags Models
+
 - **WordList**: Custom vocabulary collections
 - **Tag**: Categorization system
 - **Favorite**: Bookmarked words
@@ -265,21 +281,24 @@ model UserWord {
 ### Data Structure
 
 #### CSV Import Format
+
 The system supports importing vocabulary from CSV files with the following structure:
 
-| CSV Column | Maps To | Type | Description |
-|------------|----------|------|-------------|
-| `word` | `Word.word` | String | English word |
-| `translation` | `Definition.translation` | String | Chinese translation with POS |
-| `phonetic` | `Word.phonetic` | JSON | UK/US pronunciations |
-| `sentence` | `ExampleSentence` | JSON Array | Example sentences |
+| CSV Column    | Maps To                  | Type       | Description                  |
+| ------------- | ------------------------ | ---------- | ---------------------------- |
+| `word`        | `Word.word`              | String     | English word                 |
+| `translation` | `Definition.translation` | String     | Chinese translation with POS |
+| `phonetic`    | `Word.phonetic`          | JSON       | UK/US pronunciations         |
+| `sentence`    | `ExampleSentence`        | JSON Array | Example sentences            |
 
 #### Example CSV Entry
+
 ```csv
 excuse,v.原谅；n.借口，理由,"{""uk"": ""/ɪkˈskjuːz/"", ""us"": ""/ɪkˈskjuːs/""}","[{""cn_sentence"": ""打扰一下..."", ""origin_sentence"": ""Excuse me...""}]"
 ```
 
 #### Phonetic JSON Format
+
 ```json
 {
   "uk": "/ɪkˈskjuːz/",
@@ -288,6 +307,7 @@ excuse,v.原谅；n.借口，理由,"{""uk"": ""/ɪkˈskjuːz/"", ""us"": ""/ɪk
 ```
 
 #### Example Sentences JSON Format
+
 ```json
 [
   {
@@ -363,9 +383,11 @@ export default defineNuxtConfig({
 ### Current Endpoints
 
 #### GET /api/users
+
 Returns all users with their associated posts (example endpoint).
 
 **Response:**
+
 ```json
 [
   {
@@ -382,6 +404,7 @@ Returns all users with their associated posts (example endpoint).
 ### Planned Endpoints
 
 #### Word Management
+
 - `GET /api/words` - List words with pagination and filters
 - `GET /api/words/:id` - Get word details
 - `POST /api/words` - Create new word
@@ -389,12 +412,14 @@ Returns all users with their associated posts (example endpoint).
 - `DELETE /api/words/:id` - Delete word
 
 #### Learning Features
+
 - `GET /api/words/review` - Get words due for review
 - `POST /api/words/review/:id` - Submit review result
 - `GET /api/stats/overview` - Learning statistics
 - `GET /api/stats/progress` - Learning progress
 
 #### Word Lists
+
 - `GET /api/word-lists` - List user's word lists
 - `POST /api/word-lists` - Create new word list
 - `GET /api/word-lists/:id` - Get word list details
@@ -434,6 +459,7 @@ Contributions are welcome! Please follow these guidelines:
 ### Database Connection Issues
 
 If you encounter database connection errors:
+
 1. Verify `.env` file exists with correct `DATABASE_URL`
 2. Ensure PostgreSQL service is running
 3. Check database user has sufficient permissions
@@ -452,6 +478,7 @@ pnpm prisma:push --force-reset
 ### Development Server Issues
 
 If pages don't render or routes don't work:
+
 1. Ensure files are in `app/pages/` directory
 2. Verify file naming follows Nuxt conventions (e.g., `index.vue`, `[id].vue`)
 3. Restart development server: `pnpm dev`
@@ -460,6 +487,7 @@ If pages don't render or routes don't work:
 ## 📞 Support
 
 For questions, issues, or suggestions:
+
 - Open an issue on GitHub
 - Check existing documentation in `AGENTS.md` (Chinese)
 - Refer to official documentation links above

@@ -1,4 +1,4 @@
-export const useWorkspace = () => {
+export function useWorkspace() {
   const isCollapsed = ref(false)
 
   const toggleSidebar = () => {

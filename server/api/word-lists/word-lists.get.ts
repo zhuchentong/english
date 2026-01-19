@@ -1,4 +1,4 @@
-import { prisma } from '../utils/db'
+import { prisma } from '../../utils/db'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -8,7 +8,7 @@ export default defineEventHandler(async (event) => {
 
     const skip = (page - 1) * pageSize
 
-    const [data, total] = await Promise.all([
+    const [items, total] = await Promise.all([
       prisma.wordList.findMany({
         skip,
         take: pageSize,
@@ -22,7 +22,7 @@ export default defineEventHandler(async (event) => {
     const totalPages = Math.ceil(total / pageSize)
 
     return {
-      data,
+      data: items,
       pagination: {
         total,
         page,

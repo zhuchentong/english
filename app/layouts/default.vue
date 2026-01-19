@@ -1,3 +1,9 @@
+<script setup lang="ts">
+import WsFooter from '../components/workspace/WsFooter.vue'
+import WsHeader from '../components/workspace/WsHeader.vue'
+import WsSidebar from '../components/workspace/WsSidebar.vue'
+</script>
+
 <template>
   <t-layout class="workspace-layout">
     <t-header>
@@ -20,12 +26,6 @@
     </t-layout>
   </t-layout>
 </template>
-
-<script setup lang="ts">
-import WsHeader from '../components/workspace/WsHeader.vue'
-import WsSidebar from '../components/workspace/WsSidebar.vue'
-import WsFooter from '../components/workspace/WsFooter.vue'
-</script>
 
 <style scoped>
 .workspace-layout {

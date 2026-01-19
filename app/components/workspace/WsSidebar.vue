@@ -1,10 +1,23 @@
+<script setup lang="ts">
+import { useWorkspace } from '@/composables/useWorkspace'
+
+const route = useRoute()
+const { isCollapsed, toggleSidebar } = useWorkspace()
+
+const activeMenu = computed(() => route.path)
+
+function handleMenuChange(value: string) {
+  navigateTo(value)
+}
+</script>
+
 <template>
   <t-menu
     :value="activeMenu"
     theme="light"
     :collapsed="isCollapsed"
     :width="['232px', '64px']"
-    @change="(value)=>handleMenuChange(value as string)"
+    @change="(value) => handleMenuChange(value as string)"
   >
     <t-menu-item value="/words" to="/words">
       <template #icon>
@@ -33,19 +46,6 @@
     </template>
   </t-menu>
 </template>
-
-<script setup lang="ts">
-import { useWorkspace } from '@/composables/useWorkspace'
-
-const route = useRoute()
-const { isCollapsed, toggleSidebar } = useWorkspace()
-
-const activeMenu = computed(() => route.path)
-
-const handleMenuChange = (value: string) => {
-  navigateTo(value)
-}
-</script>
 
 <style scoped>
 .ws-sidebar {

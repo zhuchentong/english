@@ -1,13 +1,15 @@
+<script setup lang="ts">
+</script>
+
 <template>
-  <div class="ws-header flex items-center px-6 h-16 bg-white border-b border-gray-200">
+  <div class="ws-header h-16 flex items-center border-b border-gray-200 bg-white px-6">
     <div class="flex items-center gap-3">
-      <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-        <span class="text-white font-bold text-lg">W</span>
+      <div class="h-8 w-8 flex items-center justify-center rounded-lg bg-primary">
+        <span class="text-lg text-white font-bold">W</span>
       </div>
-      <h1 class="text-xl font-semibold text-gray-800">Word Box</h1>
+      <h1 class="text-xl text-gray-800 font-semibold">
+        Word Box
+      </h1>
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-</script>

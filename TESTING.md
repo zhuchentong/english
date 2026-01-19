@@ -4,11 +4,11 @@ This project follows **Test-Driven Development (TDD)** workflow with comprehensi
 
 ## 🧪 Test Stack
 
-| Type | Framework | Purpose |
-|------|-----------|---------|
-| **Unit Tests** | Vitest + @vue/test-utils | Fast, isolated tests |
-| **Nuxt Runtime Tests** | @nuxt/test-utils + happy-dom | Component + composable tests |
-| **E2E Tests** | Playwright + @nuxt/test-utils | Full browser testing |
+| Type                   | Framework                     | Purpose                      |
+| ---------------------- | ----------------------------- | ---------------------------- |
+| **Unit Tests**         | Vitest + @vue/test-utils      | Fast, isolated tests         |
+| **Nuxt Runtime Tests** | @nuxt/test-utils + happy-dom  | Component + composable tests |
+| **E2E Tests**          | Playwright + @nuxt/test-utils | Full browser testing         |
 
 ## 📁 Test Directory Structure
 
@@ -107,7 +107,7 @@ git commit -m "feat: [feature description]"
 ### Example Test Structure
 
 ```typescript
-import { describe, it, expect, beforeEach, afterEach } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 
 describe('Feature Name', () => {
   beforeEach(async () => {
@@ -164,10 +164,12 @@ pnpm test:coverage
 ```
 
 Coverage reports are generated in:
+
 - `coverage/` directory
 - HTML report: Open `coverage/index.html`
 
 **Coverage Targets** (recommended):
+
 - Statements: ≥ 80%
 - Branches: ≥ 80%
 - Functions: ≥ 80%
@@ -221,6 +223,7 @@ Coverage reports are generated in:
 **Error**: `Cannot find module '.prisma/client/default'`
 
 **Solution**:
+
 ```bash
 pnpm prisma:generate
 ```
@@ -230,6 +233,7 @@ pnpm prisma:generate
 **Error**: Cannot find module using `@/` alias
 
 **Solution**: Ensure path aliases are configured in `vitest.config.ts`:
+
 ```typescript
 resolve: {
   alias: {
@@ -244,6 +248,7 @@ resolve: {
 **Error**: Vitest tries to run E2E tests
 
 **Solution**: Ensure `test/e2e/**` is excluded in `vitest.config.ts`:
+
 ```typescript
 exclude: ['node_modules', '.nuxt', 'dist', 'test/e2e/**', '**/*.e2e.{ts,js}']
 ```

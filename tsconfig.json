@@ -1,6 +1,13 @@
 {
-  // https://nuxt.com/docs/guide/concepts/typescript
-  "files": [],
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./app/*"],
+      "@@/*": ["./*"],
+      "@/prisma": ["./app/generated/prisma"],
+      "@/prisma/*": ["./app/generated/prisma/*"],
+      "@/server/*": ["./server/*"]
+    }
+  },
   "references": [
     {
       "path": "./.nuxt/tsconfig.app.json"
@@ -15,13 +22,6 @@
       "path": "./.nuxt/tsconfig.node.json"
     }
   ],
-  "compilerOptions": {
-    "paths": {
-      "@/*": ["./app/*"],
-      "@@/*": ["./*"],
-      "@/prisma": ["./app/generated/prisma"],
-      "@/prisma/*": ["./app/generated/prisma/*"],
-      "@/server/*": ["./server/*"]
-    }
-  }
+  // https://nuxt.com/docs/guide/concepts/typescript
+  "files": []
 }

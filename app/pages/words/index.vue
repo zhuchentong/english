@@ -1,32 +1,3 @@
-<template>
-  <div>
-    <t-card title="单词书列表">
-      <template #actions>
-        <t-button theme="primary">
-          <template #icon>
-            <t-icon name="add" />
-          </template>
-          新建单词书
-        </t-button>
-      </template>
-
-      <t-space direction="vertical" size="large" class="w-full">
-        <t-alert theme="info" message="这里是单词书列表页面示例" />
-
-        <t-card v-for="book in wordBooks" :key="book.id" :title="book.name" class="cursor-pointer hover:shadow-lg transition-shadow">
-          <div class="flex justify-between items-center">
-            <div>
-              <div class="text-gray-600">{{ book.description }}</div>
-              <div class="text-sm text-gray-400 mt-2">单词数量: {{ book.wordCount }}</div>
-            </div>
-            <t-icon name="chevron-right" class="text-gray-400" />
-          </div>
-        </t-card>
-      </t-space>
-    </t-card>
-  </div>
-</template>
-
 <script setup lang="ts">
 interface WordBook {
   id: number
@@ -56,3 +27,36 @@ const wordBooks = ref<WordBook[]>([
   },
 ])
 </script>
+
+<template>
+  <div>
+    <t-card title="单词书列表">
+      <template #actions>
+        <t-button theme="primary">
+          <template #icon>
+            <t-icon name="add" />
+          </template>
+          新建单词书
+        </t-button>
+      </template>
+
+      <t-space direction="vertical" size="large" class="w-full">
+        <t-alert theme="info" message="这里是单词书列表页面示例" />
+
+        <t-card v-for="book in wordBooks" :key="book.id" :title="book.name" class="cursor-pointer transition-shadow hover:shadow-lg">
+          <div class="flex items-center justify-between">
+            <div>
+              <div class="text-gray-600">
+                {{ book.description }}
+              </div>
+              <div class="mt-2 text-sm text-gray-400">
+                单词数量: {{ book.wordCount }}
+              </div>
+            </div>
+            <t-icon name="chevron-right" class="text-gray-400" />
+          </div>
+        </t-card>
+      </t-space>
+    </t-card>
+  </div>
+</template>

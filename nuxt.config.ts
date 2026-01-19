@@ -5,10 +5,10 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
   modules: [
-    '@nuxt/eslint', 
+    '@nuxt/eslint',
     '@nuxt/test-utils/module',
     '@tdesign-vue-next/nuxt',
-    '@unocss/nuxt'
+    '@unocss/nuxt',
   ],
   tdesign: {
     resolveIcons: false,

@@ -7,6 +7,7 @@
 ## 核心命令
 
 ### 开发命令
+
 ```bash
 pnpm dev              # 启动开发服务器 (http://localhost:3000)
 pnpm build            # 生产构建
@@ -14,6 +15,7 @@ pnpm preview          # 预览生产构建
 ```
 
 ### 测试命令 (TDD 核心)
+
 ```bash
 pnpm test                                     # 运行所有测试
 pnpm test:watch                               # 监听模式 (开发时持续运行)
@@ -25,6 +27,7 @@ pnpm test:e2e                                 # E2E 测试
 ```
 
 ### 数据库命令
+
 ```bash
 pnpm prisma:generate  # 生成 Prisma Client
 pnpm prisma:push      # 同步架构到数据库 (开发用)
@@ -35,6 +38,7 @@ pnpm prisma:reset     # 清空所有表
 ```
 
 ### 代码质量
+
 ```bash
 pnpm lint             # ESLint 检查
 pnpm lint:fix         # 自动修复 ESLint 问题
@@ -43,6 +47,7 @@ pnpm lint:fix         # 自动修复 ESLint 问题
 ## 代码风格指南
 
 ### 文件结构与命名
+
 - **路由页面**: `app/pages/index.vue` (Nuxt 4 使用 `app/`)
 - **布局文件**: `app/layouts/` (PascalCase: `default.vue`, `admin.vue`)
 - **组件**: `app/components/` (PascalCase: `WordCard.vue`)
@@ -54,6 +59,7 @@ pnpm lint:fix         # 自动修复 ESLint 问题
 ### 导入规范
 
 #### AutoImport 方案 (Nuxt 4)
+
 项目采用 Nuxt 4 AutoImport 方案，优先使用自动导入：
 
 ```typescript
@@ -88,12 +94,14 @@ import { prisma } from '../../../server/utils/db'
 **路径别名**: `@/` → `app/`, `@@/` → 根目录, `@/prisma` → `app/generated/prisma/`, `@/server` → `server/`
 
 **自动导入列表**：
+
 - Vue APIs: `ref`, `computed`, `watch`, `reactive`, `onMounted`, etc.
 - Vue Router: `useRoute`, `useRouter`, `navigateTo`
 - Nuxt Composables: `useFetch`, `useState`, `useRuntimeConfig`, etc.
 - 自定义 Composables: `app/composables/` 下的所有函数自动导入
 
 ### TypeScript 类型
+
 ```typescript
 // ✅ 严格类型，避免 any
 const wordId: number = 1
@@ -103,6 +111,7 @@ const data: any = { /* ... */ }
 ```
 
 ### Vue 组件风格
+
 ```vue
 <script setup lang="ts">
 interface Props { word: Word }
@@ -112,7 +121,9 @@ const emit = defineEmits<{ select: [wordId: number] }>()
 ```
 
 ### 布局与工作区
+
 项目使用 TDesign Layout 组件构建工作区布局（Header + Sidebar + Content + Footer）：
+
 - **布局文件**: `app/layouts/default.vue` - 使用 `<NuxtLayout>` 包裹页面
 - **Header**: `WsHeader.vue` - Logo + 项目标题
 - **Sidebar**: `WsSidebar.vue` - TDesign Menu 组件，支持折叠/展开
@@ -121,7 +132,9 @@ const emit = defineEmits<{ select: [wordId: number] }>()
 - **样式**: 结合 TDesign 组件和 UnoCSS 原子类
 
 ### CSS Reset
+
 项目使用 UnoCSS 提供的 CSS Reset 方案（tailwind-compat）：
+
 - **包**: `@unocss/reset`
 - **引入位置**: `app/app.vue` - 顶部的 `<script setup>` 中
 - **Reset 类型**: `tailwind-compat` - 兼容 TDesign 等UI框架
@@ -130,11 +143,11 @@ const emit = defineEmits<{ select: [wordId: number] }>()
 ```typescript
 // app/app.vue
 <script setup lang="ts">
-import '@unocss/reset/tailwind-compat.css'
+  import '@unocss/reset/tailwind-compat.css'
 </script>
 ```
 
-```vue
+````vue
 <!-- 使用布局 -->
 <template>
   <NuxtLayout>
@@ -152,11 +165,12 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 500, statusMessage: 'Failed to fetch words' })
   }
 })
-```
+````
 
 ### 测试风格 (TDD)
+
 ```typescript
-import { describe, it, expect, beforeEach } from 'vitest'
+import { beforeEach, describe, expect, it } from 'vitest'
 import { prisma } from '@/server/utils/db'
 
 describe('Word API', () => {
@@ -166,6 +180,7 @@ describe('Word API', () => {
 ```
 
 ### 数据库操作
+
 ```typescript
 // ✅ 使用单例 Prisma Client
 import { prisma } from '@/server/utils/db'
@@ -206,16 +221,16 @@ const client1 = new PrismaClient()
 
 ## 关键文件位置
 
-| 任务 | 位置 |
-|------|------|
-| 数据库架构 | `prisma/schema.prisma` |
-| Prisma 单例 | `server/utils/db.ts` |
-| 应用入口 | `app/app.vue` |
-| 布局文件 | `app/layouts/` |
-| 工作区组件 | `app/components/workspace/` |
-| 工作区状态 | `app/composables/useWorkspace.ts` |
-| 路由页面 | `app/pages/` |
-| API 端点 | `server/api/` |
+| 任务        | 位置                              |
+| ----------- | --------------------------------- |
+| 数据库架构  | `prisma/schema.prisma`            |
+| Prisma 单例 | `server/utils/db.ts`              |
+| 应用入口    | `app/app.vue`                     |
+| 布局文件    | `app/layouts/`                    |
+| 工作区组件  | `app/components/workspace/`       |
+| 工作区状态  | `app/composables/useWorkspace.ts` |
+| 路由页面    | `app/pages/`                      |
+| API 端点    | `server/api/`                     |
 
 ## 注意事项
 

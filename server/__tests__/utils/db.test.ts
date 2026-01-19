@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it } from 'vitest'
 
 /**
  * TDD Example: Testing Prisma Singleton Pattern
@@ -12,7 +12,7 @@ import { describe, it, expect } from 'vitest'
  * TODO: Add database integration tests with proper test database setup.
  */
 
-describe('Prisma Singleton (server/utils/db.ts)', () => {
+describe('prisma Singleton (server/utils/db.ts)', () => {
   // These tests are currently skipped because Prisma Client import fails in vitest
   // The issue is with path alias resolution for @/prisma
   // TODO: Fix path alias resolution in vitest.config.ts or use relative imports
