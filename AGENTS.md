@@ -90,6 +90,20 @@ const emit = defineEmits<{ select: [wordId: number] }>()
 - **状态管理**: `useWorkspace.ts` composable 管理侧边栏折叠状态
 - **样式**: 结合 TDesign 组件和 UnoCSS 原子类
 
+### CSS Reset
+项目使用 UnoCSS 提供的 CSS Reset 方案（tailwind-compat）：
+- **包**: `@unocss/reset`
+- **引入位置**: `app/app.vue` - 顶部的 `<script setup>` 中
+- **Reset 类型**: `tailwind-compat` - 兼容 TDesign 等UI框架
+- **作用**: 移除浏览器默认样式，确保布局高度计算正确（无额外滚动条）
+
+```typescript
+// app/app.vue
+<script setup lang="ts">
+import '@unocss/reset/tailwind-compat.css'
+</script>
+```
+
 ```vue
 <!-- 使用布局 -->
 <template>
@@ -149,6 +163,8 @@ const client1 = new PrismaClient()
 - ❌ 在根 `pages/` 创建文件 (使用 `app/pages/`)
 - ❌ 先写代码再写测试 (违反 TDD)
 - ❌ 在 app.vue 中直接渲染内容而不使用 `<NuxtLayout>` (应使用工作区布局)
+- ❌ TDesign Table 组件缺少 `row-key` 属性
+- ❌ 侧边栏 Menu 使用 `v-model:value` 绑定 computed 只读属性（应使用 `:value`）
 
 ## 项目独特风格
 

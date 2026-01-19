@@ -22,6 +22,7 @@
         <t-alert theme="info" message="这里是单词列表页面示例" />
 
         <t-table
+          row-key="id"
           :columns="columns"
           :data="words"
           :hover="true"

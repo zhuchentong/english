@@ -1,10 +1,10 @@
 <template>
   <t-menu
-    v-model:value="activeMenu"
+    :value="activeMenu"
     theme="light"
     :collapsed="isCollapsed"
     :width="['232px', '64px']"
-    @change="handleMenuChange"
+    @change="(value)=>handleMenuChange(value as string)"
   >
     <t-menu-item value="/words" to="/words">
       <template #icon>
