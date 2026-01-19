@@ -1,9 +1,11 @@
 import { defineConfig } from 'vitest/config'
 import { fileURLToPath } from 'node:url'
 import AutoImport from 'unplugin-auto-import/vite'
+import tsconfigPaths from 'vite-tsconfig-paths'
 
 export default defineConfig({
   plugins: [
+    tsconfigPaths(),
     AutoImport({
       imports: ['vue', 'vue-router'],
       dts: false,
@@ -13,18 +15,17 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./app', import.meta.url)),
       '@@': fileURLToPath(new URL('.', import.meta.url)),
-      '@/prisma': fileURLToPath(new URL('./app/generated/prisma/index.js', import.meta.url)),
-      '@/prisma/*': fileURLToPath(new URL('./app/generated/prisma/*.js', import.meta.url)),
       '@/server': fileURLToPath(new URL('./server', import.meta.url)),
     },
     dedupe: ['@prisma/client'],
+    extensions: ['.ts', '.js', '.mjs', '.mts', '.cjs', '.json'],
   },
 
   test: {
     setupFiles: ['./vitest.setup.ts'],
     environment: 'node',
     deps: {
-      moduleDirectories: ['node_modules', 'app/generated/prisma'],
+      moduleDirectories: ['node_modules', 'app/generated/prisma', 'app'],
       interopDefault: true,
     },
     coverage: {

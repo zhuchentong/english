@@ -1,3 +1,5 @@
+import { prisma } from '../../../utils/db'
+
 export default defineEventHandler(async (event) => {
   try {
     const id = Number(event.context.params?.id)

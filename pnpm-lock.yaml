@@ -63,6 +63,9 @@ importers:
       dotenv:
         specifier: ^17.2.3
         version: 17.2.3
+      h3:
+        specifier: 2.0.1-rc.8
+        version: 2.0.1-rc.8
       happy-dom:
         specifier: ^20.3.1
         version: 20.3.1

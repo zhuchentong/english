@@ -43,7 +43,7 @@ describe('Word List Words API (GET /api/word-lists/:id/words)', () => {
     })
 
     const event = new Request(`http://localhost:3000/api/word-lists/${wordList.id}/words?page=1&pageSize=50`)
-    const handler = (await import('../../[id]/words.get.ts')).default
+    const handler = (await import('../../[id]/words.get')).default
     const response = await handler(event)
     const result = await response.json()
 
