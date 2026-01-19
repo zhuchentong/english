@@ -63,3 +63,7 @@ prisma/
 - ❌ 创建后手动编辑迁移文件
 - ❌ 在生产环境运行 seed 脚本 (使用适当的数据管理)
 - ❌ 重复数据库清空逻辑 (seed.ts:271-280 和 reset.ts:13-22 重复)
+
+## 相关文档
+
+[Prisma 文档 - PostgreSQL 数据库](https://r.jina.ai/https://www.prisma.io/docs/postgresql)

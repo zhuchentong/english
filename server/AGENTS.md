@@ -70,3 +70,9 @@ export default defineEventHandler(async (event) => {
 - ❌ 在 API 路由中使用 `.env` 值 (通过 `process.env` 或 `useRuntimeConfig` 读取)
 - ❌ 跳过 API 路由中的验证 (使用 zod 等验证请求体)
 - ❌ 在 utils/ 中混合客户端和服务器代码 (server/ 仅限服务器端)
+
+## 相关文档
+
+- [H3 文档 - 路由](https://r.jina.ai/https://h3.unjs.io/guide/routing)
+- [Prisma 文档 - 数据库连接](https://r.jina.ai/https://www.prisma.io/docs/concepts/components/prisma-client/connection-management)
+- [Zod 文档 - 验证](https://zod.dev/llms.txt)

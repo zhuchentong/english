@@ -1,4 +1,5 @@
 import { prisma } from '../../../utils/db'
+import { definePageBuilder } from '../../../utils/define-page-builder'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -26,12 +27,12 @@ export default defineEventHandler(async (event) => {
     const page = Number(query.page) || 1
     const pageSize = Number(query.pageSize) || 50
 
-    const skip = (page - 1) * pageSize
+    const pageBuilder = await definePageBuilder({ pageIndex: page - 1, pageSize })
+    const pageArgs = pageBuilder.toPageArgs()
 
     const [items, total] = await Promise.all([
       prisma.wordListItem.findMany({
-        skip,
-        take: pageSize,
+        ...pageArgs,
         where: {
           wordListId: id,
         },

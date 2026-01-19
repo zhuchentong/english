@@ -63,3 +63,7 @@ app/
 3. 创建常用组件: WordCard, SearchBar, WordList
 4. 创建 composables: useWords, useAuth, useFavorites
 5. 创建 layouts/default.vue 布局
+
+## 相关文档
+
+- [TDesign Vue Next 文档 - 组件库](https://r.jina.ai/https://tdesign.tencent.com/vue-next/overview)
