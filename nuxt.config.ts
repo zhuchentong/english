@@ -4,7 +4,12 @@ import { fileURLToPath } from 'node:url'
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
-  modules: ['@nuxt/eslint', '@nuxt/test-utils/module'],
+  modules: ['@nuxt/eslint', '@nuxt/test-utils/module', '@tdesign-vue-next/nuxt'],
+
+  tdesign: {
+    resolveIcons: false,
+    importVariables: true,
+  },
 
   alias: {
     '@': fileURLToPath(new URL('./app', import.meta.url)),
