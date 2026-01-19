@@ -1,19 +1,18 @@
-import { H3Event } from 'h3'
+import { prisma } from '@@/server/utils/db'
 import { beforeEach, describe, expect, it } from 'vitest'
-import { prisma } from '../../../../utils/db'
-
-function createMockEvent(url: string, params?: Record<string, string>): H3Event {
-  const urlObj = new URL(url)
-  const req = new Request(urlObj, { method: 'GET' })
-  const event = new H3Event(req, { params: params || {} })
-  return event
-}
+import { createMockEvent } from '../../utils/createMockEvent'
 
 describe('word List Words API (GET /api/word-lists/:id/words)', () => {
   beforeEach(async () => {
     await prisma.wordListItem.deleteMany()
+    await prisma.userWord.deleteMany()
+    await prisma.favorite.deleteMany()
+    await prisma.definition.deleteMany()
+    await prisma.exampleSentence.deleteMany()
+    await prisma.wordTag.deleteMany()
     await prisma.wordList.deleteMany()
     await prisma.word.deleteMany()
+    await prisma.tag.deleteMany()
     await prisma.user.deleteMany()
   })
 
@@ -51,7 +50,7 @@ describe('word List Words API (GET /api/word-lists/:id/words)', () => {
     })
 
     const event = createMockEvent(`http://localhost:3000/api/word-lists/${wordList.id}/words?page=1&pageSize=50`, { id: wordList.id.toString() })
-    const handler = (await import('../../[id]/words.get')).default
+    const handler = (await import('@@/server/api/word-lists/[id]/words.get')).default
     const result = await handler(event)
 
     expect(result).toHaveProperty('data')
@@ -77,7 +76,7 @@ describe('word List Words API (GET /api/word-lists/:id/words)', () => {
 
   it('should return 404 when word list does not exist', async () => {
     const event = createMockEvent('http://localhost:3000/api/word-lists/99999/words', { id: '99999' })
-    const handler = (await import('../../[id]/words.get')).default
+    const handler = (await import('@@/server/api/word-lists/[id]/words.get')).default
 
     await expect(handler(event)).rejects.toMatchObject({
       statusCode: 404,
@@ -103,7 +102,7 @@ describe('word List Words API (GET /api/word-lists/:id/words)', () => {
     })
 
     const event = createMockEvent(`http://localhost:3000/api/word-lists/${wordList.id}/words`, { id: wordList.id.toString() })
-    const handler = (await import('../../[id]/words.get')).default
+    const handler = (await import('@@/server/api/word-lists/[id]/words.get')).default
     const result = await handler(event)
 
     expect(result.data).toEqual([])
@@ -150,7 +149,7 @@ describe('word List Words API (GET /api/word-lists/:id/words)', () => {
     }
 
     const event = createMockEvent(`http://localhost:3000/api/word-lists/${wordList.id}/words?page=2&pageSize=3`, { id: wordList.id.toString() })
-    const handler = (await import('../../[id]/words.get')).default
+    const handler = (await import('@@/server/api/word-lists/[id]/words.get')).default
     const result = await handler(event)
 
     expect(result.data).toHaveLength(3)
@@ -196,7 +195,7 @@ describe('word List Words API (GET /api/word-lists/:id/words)', () => {
     })
 
     const event = createMockEvent(`http://localhost:3000/api/word-lists/${wordList.id}/words`, { id: wordList.id.toString() })
-    const handler = (await import('../../[id]/words.get')).default
+    const handler = (await import('@@/server/api/word-lists/[id]/words.get')).default
     const result = await handler(event)
 
     expect(result.data[0].word).toBe('second')

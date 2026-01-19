@@ -1,18 +1,18 @@
-import { H3Event } from 'h3'
+import { prisma } from '@@/server/utils/db'
 import { beforeEach, describe, expect, it } from 'vitest'
-import { prisma } from '../../../utils/db'
-
-function createMockEvent(url: string): H3Event {
-  const urlObj = new URL(url)
-  const req = new Request(urlObj, { method: 'GET' })
-  const event = new H3Event(req, { params: {} })
-  return event
-}
+import { createMockEvent } from '../utils/createMockEvent'
 
 describe('word Lists API (GET /api/word-lists)', () => {
   beforeEach(async () => {
     await prisma.wordListItem.deleteMany()
+    await prisma.userWord.deleteMany()
+    await prisma.favorite.deleteMany()
+    await prisma.definition.deleteMany()
+    await prisma.exampleSentence.deleteMany()
+    await prisma.wordTag.deleteMany()
     await prisma.wordList.deleteMany()
+    await prisma.word.deleteMany()
+    await prisma.tag.deleteMany()
     await prisma.user.deleteMany()
   })
   it('should return paginated word lists with default parameters', async () => {
@@ -35,7 +35,7 @@ describe('word Lists API (GET /api/word-lists)', () => {
     })
 
     const event = createMockEvent('http://localhost:3000/api/word-lists?page=1&pageSize=50')
-    const handler = (await import('../../word-lists.get')).default
+    const handler = (await import('@@/server/api/word-lists.get')).default
     const result = await handler(event)
 
     expect(result).toHaveProperty('data')
@@ -73,7 +73,7 @@ describe('word Lists API (GET /api/word-lists)', () => {
     }
 
     const event = createMockEvent('http://localhost:3000/api/word-lists?page=2&pageSize=3')
-    const handler = (await import('../../word-lists.get')).default
+    const handler = (await import('@@/server/api/word-lists.get')).default
     const result = await handler(event)
 
     expect(result.data).toHaveLength(3)
@@ -87,7 +87,7 @@ describe('word Lists API (GET /api/word-lists)', () => {
 
   it('should return empty array when no word lists exist', async () => {
     const event = createMockEvent('http://localhost:3000/api/word-lists')
-    const handler = (await import('../../word-lists.get')).default
+    const handler = (await import('@@/server/api/word-lists.get')).default
     const result = await handler(event)
 
     expect(result.data).toEqual([])
@@ -119,7 +119,7 @@ describe('word Lists API (GET /api/word-lists)', () => {
     })
 
     const event = createMockEvent('http://localhost:3000/api/word-lists')
-    const handler = (await import('../../word-lists.get')).default
+    const handler = (await import('@@/server/api/word-lists.get')).default
     const result = await handler(event)
 
     expect(result.data[0].name).toBe('Book 2')

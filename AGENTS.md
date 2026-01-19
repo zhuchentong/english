@@ -21,7 +21,7 @@ pnpm test                                     # 运行所有测试
 pnpm test:watch                               # 监听模式 (开发时持续运行)
 pnpm test:coverage                            # 覆盖率报告
 pnpm test:ui                                  # 测试 UI 界面
-pnpm test server/__tests__/utils/db.test.ts   # 运行单个测试文件
+pnpm test test/server/utils/db.test.ts         # 运行单个测试文件
 pnpm test --grep "should create word"         # 运行匹配模式的测试
 pnpm test:e2e                                 # E2E 测试
 ```
@@ -54,7 +54,7 @@ pnpm lint:fix         # 自动修复 ESLint 问题
   - **工作区组件**: `app/components/workspace/` (前缀 `Ws`: `WsHeader.vue`, `WsSidebar.vue`, `WsFooter.vue`)
 - **Composables**: `app/composables/` (camelCase 前缀 `use`: `useWords.ts`, `useWorkspace.ts`)
 - **API 路由**: `server/api/` (RESTful: `words.get.ts`, `words.post.ts`)
-- **测试文件**: 与被测文件同级或 `__tests__` 目录，后缀 `.test.ts`
+- **测试文件**: 统一放在 `test/` 目录，按源码路径镜像，后缀 `.test.ts`
 
 ### 导入规范
 
@@ -211,6 +211,7 @@ const client1 = new PrismaClient()
 - ❌ TDesign Table 组件缺少 `row-key` 属性
 - ❌ 侧边栏 Menu 使用 `v-model:value` 绑定 computed 只读属性（应使用 `:value`）
 - ❌ 显式导入 Vue API（`import { ref, computed } from 'vue'` 或 `import { useRoute } from 'vue-router'`，应使用 AutoImport）
+- ❌ 在源码目录（`server/`、`app/`）下创建 `__tests__` 目录（所有测试必须放在 `test/` 目录）
 
 ## 项目独特风格
 
@@ -231,6 +232,7 @@ const client1 = new PrismaClient()
 | 工作区状态  | `app/composables/useWorkspace.ts` |
 | 路由页面    | `app/pages/`                      |
 | API 端点    | `server/api/`                     |
+| 测试文件    | `test/` (按源码路径镜像)          |
 
 ## 注意事项
 

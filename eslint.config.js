@@ -29,7 +29,7 @@ export default antfu({
     'vue/multi-word-component-names': 'off',
   },
 }, {
-  files: ['prisma/**/*.ts', 'test/**/*.ts'],
+  files: ['prisma/**/*.ts', 'test/**/*.ts', '**/*.test.ts'],
   rules: {
     'no-console': 'off',
   },

@@ -15,7 +15,6 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./app', import.meta.url)),
       '@@': fileURLToPath(new URL('.', import.meta.url)),
-      '@/server': fileURLToPath(new URL('./server', import.meta.url)),
     },
     dedupe: ['@prisma/client'],
     extensions: ['.ts', '.js', '.mjs', '.mts', '.cjs', '.json'],
@@ -24,6 +23,7 @@ export default defineConfig({
   test: {
     setupFiles: ['./vitest.setup.ts'],
     environment: 'node',
+    fileParallelism: false,
     deps: {
       moduleDirectories: ['node_modules', 'app/generated/prisma', 'app'],
       interopDefault: true,
@@ -44,11 +44,7 @@ export default defineConfig({
       ],
     },
     include: [
-      '**/*.{test,spec}.{ts,js}',
       'test/**/*.{test,spec}.{ts,js}',
-      'server/__tests__/**/*.{test,spec}.{ts,js}',
-      'server/api/**/__tests__/**/*.{test,spec}.{ts,js}',
-      'app/__tests__/**/*.{test,spec}.{ts,js}',
     ],
     exclude: ['node_modules', '.nuxt', 'dist', 'test/e2e/**', '**/*.e2e.{ts,js}'],
     reporters: ['verbose'],

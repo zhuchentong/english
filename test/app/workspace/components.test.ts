@@ -12,7 +12,8 @@ import { fileURLToPath } from 'node:url'
 import { describe, expect, it } from 'vitest'
 
 describe('workspace Components', () => {
-  const appDir = fileURLToPath(new URL('../../app', import.meta.url))
+  const rootDir = fileURLToPath(new URL('../../../', import.meta.url))
+  const appDir = `${rootDir}/app`
 
   it('wsHeader component file should exist', () => {
     const filePath = `${appDir}/components/workspace/WsHeader.vue`
