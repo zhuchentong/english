@@ -37,6 +37,7 @@
     "@playwright/test": "^1.57.0",
     "@tdesign-vue-next/nuxt": "^0.1.5",
     "@types/pg": "^8.16.0",
+    "@unocss/nuxt": "^66.6.0",
     "@vitest/coverage-v8": "^4.0.17",
     "@vitest/ui": "^4.0.17",
     "@vue/test-utils": "^2.4.6",
@@ -46,6 +47,7 @@
     "prisma": "^7.2.0",
     "tdesign-vue-next": "^1.18.0",
     "tsx": "^4.21.0",
+    "unocss": "^66.6.0",
     "vitest": "^4.0.17",
     "vue-tsc": "^3.2.2"
   },
