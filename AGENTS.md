@@ -44,8 +44,10 @@ pnpm lint:fix         # 自动修复 ESLint 问题
 
 ### 文件结构与命名
 - **路由页面**: `app/pages/index.vue` (Nuxt 4 使用 `app/`)
+- **布局文件**: `app/layouts/` (PascalCase: `default.vue`, `admin.vue`)
 - **组件**: `app/components/` (PascalCase: `WordCard.vue`)
-- **Composables**: `app/composables/` (camelCase 前缀 `use`: `useWords.ts`)
+  - **工作区组件**: `app/components/workspace/` (前缀 `Ws`: `WsHeader.vue`, `WsSidebar.vue`, `WsFooter.vue`)
+- **Composables**: `app/composables/` (camelCase 前缀 `use`: `useWords.ts`, `useWorkspace.ts`)
 - **API 路由**: `server/api/` (RESTful: `words.get.ts`, `words.post.ts`)
 - **测试文件**: 与被测文件同级或 `__tests__` 目录，后缀 `.test.ts`
 
@@ -78,6 +80,23 @@ const props = defineProps<Props>()
 const emit = defineEmits<{ select: [wordId: number] }>()
 </script>
 ```
+
+### 布局与工作区
+项目使用 TDesign Layout 组件构建工作区布局（Header + Sidebar + Content + Footer）：
+- **布局文件**: `app/layouts/default.vue` - 使用 `<NuxtLayout>` 包裹页面
+- **Header**: `WsHeader.vue` - Logo + 项目标题
+- **Sidebar**: `WsSidebar.vue` - TDesign Menu 组件，支持折叠/展开
+- **Footer**: `WsFooter.vue` - 版本信息和版权
+- **状态管理**: `useWorkspace.ts` composable 管理侧边栏折叠状态
+- **样式**: 结合 TDesign 组件和 UnoCSS 原子类
+
+```vue
+<!-- 使用布局 -->
+<template>
+  <NuxtLayout>
+    <NuxtPage />
+  </NuxtLayout>
+</template>
 
 ### API 路由风格
 ```typescript
@@ -129,6 +148,7 @@ const client1 = new PrismaClient()
 - ❌ 创建多个 PrismaClient 实例
 - ❌ 在根 `pages/` 创建文件 (使用 `app/pages/`)
 - ❌ 先写代码再写测试 (违反 TDD)
+- ❌ 在 app.vue 中直接渲染内容而不使用 `<NuxtLayout>` (应使用工作区布局)
 
 ## 项目独特风格
 
@@ -143,7 +163,10 @@ const client1 = new PrismaClient()
 |------|------|
 | 数据库架构 | `prisma/schema.prisma` |
 | Prisma 单例 | `server/utils/db.ts` |
-| 应用入口 | `app/app.vue` (需改为 `<NuxtPage />`) |
+| 应用入口 | `app/app.vue` |
+| 布局文件 | `app/layouts/` |
+| 工作区组件 | `app/components/workspace/` |
+| 工作区状态 | `app/composables/useWorkspace.ts` |
 | 路由页面 | `app/pages/` |
 | API 端点 | `server/api/` |
 
