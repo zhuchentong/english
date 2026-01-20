@@ -144,14 +144,16 @@ Before you begin, ensure you have the following installed:
 
    ```env
    # Database connection (required)
-   DATABASE_URL="postgresql://user:password@host:port/database?schema=public"
-
-   # Application configuration (optional)
-   NUXT_PUBLIC_APP_NAME="English Word Management Tool"
-   NUXT_PUBLIC_APP_URL="http://localhost:3000"
+   NUXT_DATABASE_URL="postgresql://user:password@host:port/database?schema=public"
    ```
 
-   **Note**: The `.env` file is already included in `.gitignore` for security.
+   For testing, create a `.env.test` file:
+
+   ```env
+   NUXT_DATABASE_URL="postgresql://test_user:test_password@host:port/test_db"
+   ```
+
+   **Note**: The `.env` and `.env.test` files are already included in `.gitignore` for security. Nuxt 4 automatically loads `.env` during development and respects the `NUXT_` prefix convention.
 
 4. **Initialize database**
 
@@ -460,7 +462,7 @@ Contributions are welcome! Please follow these guidelines:
 
 If you encounter database connection errors:
 
-1. Verify `.env` file exists with correct `DATABASE_URL`
+1. Verify `.env` file exists with correct `NUXT_DATABASE_URL`
 2. Ensure PostgreSQL service is running
 3. Check database user has sufficient permissions
 4. Run `pnpm prisma:generate` to update Prisma Client

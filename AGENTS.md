@@ -50,8 +50,9 @@ tsx ./scripts/prisma.ts migrate dev             # 创建迁移 (默认: dev)
 ```
 
 **环境说明**：
-- `.env.development` → 开发数据库 `english`
-- `.env.test` → 测试数据库 `english_test`
+
+- `.env` → 开发数据库 `english` (NUXT_DATABASE_URL)
+- `.env.test` → 测试数据库 `english_test` (NUXT_DATABASE_URL)
 - 测试环境数据不会被 `beforeEach` 清除到开发数据库
 
 ### 代码质量
@@ -251,6 +252,21 @@ await prisma.$transaction(async (tx) => { /* ... */ })
 const client1 = new PrismaClient()
 ```
 
+### 环境变量访问
+
+Server 代码中使用 `process.env.NUXT_DATABASE_URL`：
+
+```typescript
+// server/utils/db.ts - 模块级别单例
+const connectionString = process.env.NUXT_DATABASE_URL
+
+// server/api/xxx.ts - API Handler 中可使用 runtimeConfig
+const config = useRuntimeConfig(event)
+const db = new PrismaClient({ datasourceUrl: config.databaseUrl })
+```
+
+**注意**: 模块级别的单例（如 `server/utils/db.ts`）无法使用 `useRuntimeConfig()`，因为缺少 event 上下文，应直接使用 `process.env`。
+
 ## TDD 约定
 
 1. RED → GREEN → REFACTOR 循环
@@ -285,28 +301,29 @@ const client1 = new PrismaClient()
 - **路径别名**: Unit 测试使用相对路径导入 server 代码，Nuxt 测试使用 `~/` 导入 app 代码
 - **E2E 测试**: 暂时跳过（`describe.skip`），@nuxt/test-utils v3.x E2E 支持仍在完善中
 - **环境分离**: 开发与测试环境完全隔离
-  - `.env.development` → 开发数据库
-  - `.env.test` → 测试数据库
+  - `.env` → 开发数据库 (NUXT_DATABASE_URL)
+  - `.env.test` → 测试数据库 (NUXT_DATABASE_URL)
   - `scripts/prisma.ts` 统一环境切换接口
+  - Nuxt 4 自动加载 `.env`，遵循 NUXT\_ 前缀约定
 
 ## 关键文件位置
 
-| 任务        | 位置                              |
-| ----------- | --------------------------------- |
-| 数据库架构  | `prisma/schema.prisma`            |
-| Prisma 单例 | `server/utils/db.ts`              |
-| Prisma 配置 | `prisma.config.ts`                |
-| Prisma 环境脚本 | `scripts/prisma.ts`              |
-| 开发环境变量 | `.env.development`                |
-| 测试环境变量 | `.env.test`                      |
-| 应用入口    | `app/app.vue`                     |
-| 布局文件    | `app/layouts/`                    |
-| 工作区组件  | `app/components/workspace/`       |
-| 工作区状态  | `app/composables/useWorkspace.ts` |
-| 路由页面    | `app/pages/`                      |
-| API 端点    | `server/api/`                     |
-| 测试文件    | `test/` (unit/nuxt/e2e 分类）     |
-| 测试设置    | `test/vitest.setup.ts`            |
+| 任务            | 位置                              |
+| --------------- | --------------------------------- |
+| 数据库架构      | `prisma/schema.prisma`            |
+| Prisma 单例     | `server/utils/db.ts`              |
+| Prisma 配置     | `prisma.config.ts`                |
+| Prisma 环境脚本 | `scripts/prisma.ts`               |
+| 开发环境变量    | `.env` (NUXT_DATABASE_URL)        |
+| 测试环境变量    | `.env.test` (NUXT_DATABASE_URL)   |
+| 应用入口        | `app/app.vue`                     |
+| 布局文件        | `app/layouts/`                    |
+| 工作区组件      | `app/components/workspace/`       |
+| 工作区状态      | `app/composables/useWorkspace.ts` |
+| 路由页面        | `app/pages/`                      |
+| API 端点        | `server/api/`                     |
+| 测试文件        | `test/` (unit/nuxt/e2e 分类）     |
+| 测试设置        | `test/vitest.setup.ts`            |
 
 ## 注意事项
 

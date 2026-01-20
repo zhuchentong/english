@@ -64,7 +64,7 @@ function parseArgs(): CLIArgs {
 }
 
 function loadEnv(env: 'development' | 'test'): NodeJS.ProcessEnv {
-  const envFile = `.env.${env}`
+  const envFile = env === 'development' ? '.env' : `.env.${env}`
   const envPath = join(process.cwd(), envFile)
 
   if (!existsSync(envPath)) {
@@ -79,13 +79,12 @@ function loadEnv(env: 'development' | 'test'): NodeJS.ProcessEnv {
     process.exit(1)
   }
 
-  if (!process.env.DATABASE_URL) {
-    console.error(`❌ DATABASE_URL 未设置，请检查 ${envFile}`)
-    process.exit(1)
+  if (!process.env.NUXT_DATABASE_URL) {
+    console.error(`❌ NUXT_DATABASE_URL 未设置，请检查 ${envFile}`)
   }
 
   console.log(`📁 使用环境文件: ${envFile}`)
-  console.log(`🗄️  数据库: ${getDbName(process.env.DATABASE_URL)}`)
+  console.log(`🗄️  数据库: ${getDbName(process.env.NUXT_DATABASE_URL)}`)
   console.log('')
 
   return process.env
@@ -108,10 +107,10 @@ function showHelp() {
   seed         执行 seed 脚本
   reset        清空数据库
 
-选项:
-  --env=<环境>    环境配置 (默认: development)
-                  development - 使用 .env.development
-                  test        - 使用 .env.test
+ 选项:
+   --env=<环境>    环境配置 (默认: development)
+                   development - 使用 .env
+                   test        - 使用 .env.test
 
 示例:
   tsx ./scripts/prisma.ts push              # 开发环境
