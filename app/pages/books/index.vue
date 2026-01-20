@@ -2,13 +2,11 @@
 import type { PageInfo } from 'tdesign-vue-next'
 
 const router = useRouter()
-const { books, booksPending, refreshBooks } = useBook()
-const currentPage = ref(1)
-const pageSize = ref(10)
+const { pagination, updatePage } = usePage(0, 10)
+const { data: books, pending } = useBook(pagination)
 
-function handlePageChange(page: PageInfo) {
-  currentPage.value = page.current
-  refreshBooks()
+function onPageChange(pageInfo: PageInfo) {
+  updatePage(pageInfo)
 }
 
 function navigateToBook(bookId: number) {
@@ -29,7 +27,7 @@ function navigateToBook(bookId: number) {
       </template>
 
       <t-space direction="vertical" size="large" class="w-full">
-        <div v-if="booksPending" class="flex justify-center py-8">
+        <div v-if="pending" class="flex justify-center py-8">
           <t-loading size="large" />
         </div>
 
@@ -54,14 +52,14 @@ function navigateToBook(bookId: number) {
             </div>
           </t-card>
 
-          <div v-if="books.length > 0" class="flex justify-center pt-4">
+          <div v-if="pagination.pageTotal > 0" class="flex justify-center pt-4">
             <t-pagination
-              v-model:current="currentPage"
-              v-model:page-size="pageSize"
-              :total="books.length"
+              v-model:current="pagination.current"
+              v-model:page-size="pagination.pageSize"
+              :total="pagination.total"
               :page-size-options="[10, 20, 50]"
               show-jumper
-              @change="handlePageChange"
+              @change="onPageChange"
             />
           </div>
         </template>

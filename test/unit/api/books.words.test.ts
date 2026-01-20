@@ -54,14 +54,17 @@ describe('book Words API (GET /api/books/:id/words)', () => {
       })),
     })
 
-    const event = createMockEvent(`http://localhost:3000/api/books/${book.id}/words?page=1&pageSize=50`, { id: book.id.toString() })
+    const event = createMockEvent(`http://localhost:3000/api/books/${book.id}/words?pageIndex=0&pageSize=50`, { id: book.id.toString() })
     const handler = (await import('../../../server/api/books/[id]/words.get')).default
     const result = await handler(event)
 
-    expect(result).toHaveProperty('data')
-    expect(result).toHaveProperty('pagination')
-    expect(result.data).toHaveLength(3)
-    expect(result.data[0]).toMatchObject({
+    expect(result).toHaveProperty('content')
+    expect(result).toHaveProperty('pageIndex')
+    expect(result).toHaveProperty('pageSize')
+    expect(result).toHaveProperty('pageTotal')
+    expect(result).toHaveProperty('total')
+    expect(result.content).toHaveLength(3)
+    expect(result.content[0]).toMatchObject({
       id: expect.any(Number),
       word: expect.any(String),
       phoneticUK: expect.any(String),
@@ -72,11 +75,11 @@ describe('book Words API (GET /api/books/:id/words)', () => {
       addedAt: expect.any(String),
       definition: expect.any(String),
     })
-    expect(result.pagination).toMatchObject({
+    expect(result).toMatchObject({
       total: 3,
-      page: 1,
+      pageIndex: 0,
       pageSize: 50,
-      totalPages: 1,
+      pageTotal: 1,
     })
   })
 
@@ -107,16 +110,16 @@ describe('book Words API (GET /api/books/:id/words)', () => {
       },
     })
 
-    const event = createMockEvent(`http://localhost:3000/api/books/${book.id}/words`, { id: book.id.toString() })
+    const event = createMockEvent(`http://localhost:3000/api/books/${book.id}/words?pageIndex=0&pageSize=10`, { id: book.id.toString() })
     const handler = (await import('../../../server/api/books/[id]/words.get')).default
     const result = await handler(event)
 
-    expect(result.data).toEqual([])
-    expect(result.pagination).toMatchObject({
+    expect(result.content).toEqual([])
+    expect(result).toMatchObject({
       total: 0,
-      page: 1,
-      pageSize: 50,
-      totalPages: 0,
+      pageIndex: 0,
+      pageSize: 10,
+      pageTotal: 0,
     })
   })
 
@@ -154,16 +157,16 @@ describe('book Words API (GET /api/books/:id/words)', () => {
       })
     }
 
-    const event = createMockEvent(`http://localhost:3000/api/books/${book.id}/words?page=2&pageSize=3`, { id: book.id.toString() })
+    const event = createMockEvent(`http://localhost:3000/api/books/${book.id}/words?pageIndex=1&pageSize=3`, { id: book.id.toString() })
     const handler = (await import('../../../server/api/books/[id]/words.get')).default
     const result = await handler(event)
 
-    expect(result.data).toHaveLength(3)
-    expect(result.pagination).toMatchObject({
+    expect(result.content).toHaveLength(3)
+    expect(result).toMatchObject({
       total: 10,
-      page: 2,
+      pageIndex: 1,
       pageSize: 3,
-      totalPages: 4,
+      pageTotal: 4,
     })
   })
 
@@ -200,11 +203,11 @@ describe('book Words API (GET /api/books/:id/words)', () => {
       data: { bookId: book.id, wordId: word2.id },
     })
 
-    const event = createMockEvent(`http://localhost:3000/api/books/${book.id}/words`, { id: book.id.toString() })
+    const event = createMockEvent(`http://localhost:3000/api/books/${book.id}/words?pageIndex=0&pageSize=10`, { id: book.id.toString() })
     const handler = (await import('../../../server/api/books/[id]/words.get')).default
     const result = await handler(event)
 
-    expect(result.data[0].word).toBe('second')
-    expect(result.data[1].word).toBe('first')
+    expect(result.content[0].word).toBe('second')
+    expect(result.content[1].word).toBe('first')
   })
 })

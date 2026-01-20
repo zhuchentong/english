@@ -31,3 +31,5 @@ playwright-report
 # Test directory conventions - all tests must be in test/
 **/__tests__/
 
+# git worktree
+.worktree

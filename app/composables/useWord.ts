@@ -1,16 +1,16 @@
-import type { Prisma } from '@prisma/client'
 import type { Pagination } from './usePage'
 
-type Book = Prisma.BookGetPayload<{
-  select: {
-    id: true
-    name: true
-    description: true
-    wordCount: true
-    isPublic: true
-    createdAt: true
-  }
-}>
+interface Word {
+  id: number
+  word: string
+  phoneticUK: string | null
+  phoneticUS: string | null
+  difficulty: number
+  viewCount: number
+  definition: string
+  itemId: number
+  addedAt: string
+}
 
 interface PaginatedResponse<T> {
   content: T[]
@@ -20,14 +20,22 @@ interface PaginatedResponse<T> {
   pageTotal: number
 }
 
-export function useBook(pagination: Ref<Pagination>) {
+interface UseWordOptions {
+  bookId: number
+  pagination: Ref<Pagination>
+}
+
+export function useWord({ bookId, pagination }: UseWordOptions) {
+  const wordsUrl = computed(() => `/api/books/${bookId}/words`)
+
   const { data, pending, error, refresh }
-    = useFetch<PaginatedResponse<Book>>('/api/books', {
+    = useFetch<PaginatedResponse<Word>>(wordsUrl, {
       query: {
         pageIndex: pagination.value.pageIndex,
         pageSize: pagination.value.pageSize,
       },
-      default: () => ({ content: [], pageIndex: 0, pageSize: 10, total: 0, pageTotal: 0 }),
+      default: () => ({ content: [], pageIndex: 0, pageSize: 9, total: 0, pageTotal: 0 }),
+      immediate: false,
       transform: (response) => {
         if (response) {
           pagination.value.pageTotal = response.pageTotal

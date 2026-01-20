@@ -26,22 +26,25 @@ describe('books API (GET /api/books)', () => {
       data: { userId: user.id, name: 'Book 3', description: 'Description 3', isPublic: true, wordCount: 30 },
     })
 
-    const event = createMockEvent('http://localhost:3000/api/books?page=1&pageSize=50')
+    const event = createMockEvent('http://localhost:3000/api/books?pageIndex=0&pageSize=50')
     const handler = (await import('../../../server/api/books.get')).default
     const result = await handler(event)
 
-    expect(result).toHaveProperty('data')
-    expect(result).toHaveProperty('pagination')
-    expect(result.data).toHaveLength(3)
-    expect(result.data[0]).toMatchObject({
+    expect(result).toHaveProperty('content')
+    expect(result).toHaveProperty('pageIndex')
+    expect(result).toHaveProperty('pageSize')
+    expect(result).toHaveProperty('pageTotal')
+    expect(result).toHaveProperty('total')
+    expect(result.content).toHaveLength(3)
+    expect(result.content[0]).toMatchObject({
       name: 'Book 3',
       wordCount: 30,
     })
-    expect(result.pagination).toMatchObject({
+    expect(result).toMatchObject({
       total: 3,
-      page: 1,
+      pageIndex: 0,
       pageSize: 50,
-      totalPages: 1,
+      pageTotal: 1,
     })
   })
 
@@ -64,30 +67,30 @@ describe('books API (GET /api/books)', () => {
       })
     }
 
-    const event = createMockEvent('http://localhost:3000/api/books?page=2&pageSize=3')
+    const event = createMockEvent('http://localhost:3000/api/books?pageIndex=1&pageSize=3')
     const handler = (await import('../../../server/api/books.get')).default
     const result = await handler(event)
 
-    expect(result.data).toHaveLength(3)
-    expect(result.pagination).toMatchObject({
+    expect(result.content).toHaveLength(3)
+    expect(result).toMatchObject({
       total: 10,
-      page: 2,
+      pageIndex: 1,
       pageSize: 3,
-      totalPages: 4,
+      pageTotal: 4,
     })
   })
 
   it('should return empty array when no books exist', async () => {
-    const event = createMockEvent('http://localhost:3000/api/books')
+    const event = createMockEvent('http://localhost:3000/api/books?pageIndex=0&pageSize=10')
     const handler = (await import('../../../server/api/books.get')).default
     const result = await handler(event)
 
-    expect(result.data).toEqual([])
-    expect(result.pagination).toMatchObject({
+    expect(result.content).toEqual([])
+    expect(result).toMatchObject({
       total: 0,
-      page: 1,
-      pageSize: 50,
-      totalPages: 0,
+      pageIndex: 0,
+      pageSize: 10,
+      pageTotal: 0,
     })
   })
 
@@ -110,11 +113,11 @@ describe('books API (GET /api/books)', () => {
       data: { userId: user.id, name: 'Book 2', wordCount: 20 },
     })
 
-    const event = createMockEvent('http://localhost:3000/api/books')
+    const event = createMockEvent('http://localhost:3000/api/books?pageIndex=0&pageSize=10')
     const handler = (await import('../../../server/api/books.get')).default
     const result = await handler(event)
 
-    expect(result.data[0].name).toBe('Book 2')
-    expect(result.data[1].name).toBe('Book 1')
+    expect(result.content[0].name).toBe('Book 2')
+    expect(result.content[1].name).toBe('Book 1')
   })
 })

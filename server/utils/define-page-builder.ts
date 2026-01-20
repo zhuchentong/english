@@ -1,6 +1,6 @@
 import type { H3Event } from 'h3'
-import { z } from 'h3-zod'
-import { useSafeQuery } from './use-safe-validate'
+import { getValidatedQuery } from 'h3'
+import { z } from 'zod'
 
 export interface PageBuilderOptions {
   pageIndex: number
@@ -12,12 +12,12 @@ const PageLikeSchema = z.object({
   pageSize: z.coerce.number().int().min(1).max(100),
 })
 
-async function getPageBulderOptions(event: H3Event | PageBuilderOptions): Promise<PageBuilderOptions> {
+async function getPageBuilderOptions(event: H3Event | PageBuilderOptions): Promise<PageBuilderOptions> {
   if ('pageIndex' in event && 'pageSize' in event) {
     return event as PageBuilderOptions
   }
   else {
-    const { pageIndex, pageSize } = await useSafeQuery(event, PageLikeSchema)
+    const { pageIndex, pageSize } = await getValidatedQuery(event, PageLikeSchema)
     return {
       pageIndex,
       pageSize,
@@ -35,7 +35,7 @@ class PageBuilder {
     }
   }
 
-  toPageRespnose<T>(content: T[], total: number) {
+  toPageResponse<T>(content: T[], total: number) {
     return {
       content,
       pageIndex: this.options.pageIndex,
@@ -47,9 +47,6 @@ class PageBuilder {
 }
 
 export async function definePageBuilder(event: H3Event | PageBuilderOptions) {
-  // 获取分页选项
-  const options = await getPageBulderOptions(event)
-
-  // 创建并返回 PageBuilder 实例
+  const options = await getPageBuilderOptions(event)
   return new PageBuilder(options)
 }
