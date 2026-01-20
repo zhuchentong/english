@@ -1,31 +1,19 @@
 <script setup lang="ts">
-interface WordBook {
-  id: number
-  name: string
-  description: string
-  wordCount: number
+import type { PageInfo } from 'tdesign-vue-next'
+
+const router = useRouter()
+const { books, booksPending, refreshBooks } = useBook()
+const currentPage = ref(1)
+const pageSize = ref(10)
+
+function handlePageChange(page: PageInfo) {
+  currentPage.value = page.current
+  refreshBooks()
 }
 
-const wordBooks = ref<WordBook[]>([
-  {
-    id: 1,
-    name: 'CET-4 核心词汇',
-    description: '大学英语四级核心词汇，共2000词',
-    wordCount: 2000,
-  },
-  {
-    id: 2,
-    name: 'CET-6 核心词汇',
-    description: '大学英语六级核心词汇，共2500词',
-    wordCount: 2500,
-  },
-  {
-    id: 3,
-    name: '雅思高频词汇',
-    description: '雅思考试高频词汇，共3000词',
-    wordCount: 3000,
-  },
-])
+function navigateToBook(bookId: number) {
+  router.push(`/books/${bookId}`)
+}
 </script>
 
 <template>
@@ -41,21 +29,44 @@ const wordBooks = ref<WordBook[]>([
       </template>
 
       <t-space direction="vertical" size="large" class="w-full">
-        <t-alert theme="info" message="这里是单词书列表页面示例" />
+        <div v-if="booksPending" class="flex justify-center py-8">
+          <t-loading size="large" />
+        </div>
 
-        <t-card v-for="book in wordBooks" :key="book.id" :title="book.name" class="cursor-pointer transition-shadow hover:shadow-lg">
-          <div class="flex items-center justify-between">
-            <div>
-              <div class="text-gray-600">
-                {{ book.description }}
+        <template v-else-if="books.length > 0">
+          <t-card
+            v-for="book in books"
+            :key="book.id"
+            :title="book.name"
+            class="cursor-pointer transition-shadow hover:shadow-lg"
+            @click="navigateToBook(book.id)"
+          >
+            <div class="flex items-center justify-between">
+              <div>
+                <div v-if="book.description" class="text-gray-600">
+                  {{ book.description }}
+                </div>
+                <div class="mt-2 text-sm text-gray-400">
+                  单词数量: {{ book.wordCount }}
+                </div>
               </div>
-              <div class="mt-2 text-sm text-gray-400">
-                单词数量: {{ book.wordCount }}
-              </div>
+              <t-icon name="chevron-right" class="text-gray-400" />
             </div>
-            <t-icon name="chevron-right" class="text-gray-400" />
+          </t-card>
+
+          <div v-if="books.length > 0" class="flex justify-center pt-4">
+            <t-pagination
+              v-model:current="currentPage"
+              v-model:page-size="pageSize"
+              :total="books.length"
+              :page-size-options="[10, 20, 50]"
+              show-jumper
+              @change="handlePageChange"
+            />
           </div>
-        </t-card>
+        </template>
+
+        <t-empty v-else description="暂无单词书" />
       </t-space>
     </t-card>
   </div>

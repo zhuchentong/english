@@ -1,6 +1,6 @@
 import type { H3Event } from 'h3'
 import type { z } from 'zod'
-import { createError } from 'h3'
+import { HTTPError } from 'h3'
 import { useSafeValidatedBody, useSafeValidatedParams, useSafeValidatedQuery } from 'h3-zod'
 
 type Schema = z.ZodTypeAny
@@ -9,7 +9,7 @@ type SafeParsedData<T extends Schema | z.ZodRawShape> = T extends Schema ? z.Zod
 
 function validateParseResult<T extends Schema | z.ZodRawShape>(result: SafeParsedData<T>): ParsedData<T> {
   if (!result.success) {
-    throw createError({
+    throw new HTTPError({
       status: 400,
       message: result.error.message,
     })

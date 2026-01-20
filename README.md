@@ -88,8 +88,7 @@ english/
 │   ├── components/               # Vue components (to be added)
 │   ├── composables/              # Vue composables (to be added)
 │   ├── pages/                    # File-based routing (to be added)
-│   ├── layouts/                  # Layout components (to be added)
-│   └── [generated/prisma/]       # Prisma Client output (auto-generated)
+│   └── layouts/                  # Layout components (to be added)
 ├── server/                       # Server-side code
 │   ├── api/                      # API routes
 │   │   └── users.get.ts          # Example endpoint
@@ -374,8 +373,9 @@ export default defineNuxtConfig({
 ### Prisma Configuration
 
 - Schema: `prisma/schema.prisma`
+- Config: `prisma.config.ts`
 - Migrations: `prisma/migrations/`
-- Client Output: `app/generated/prisma/`
+- Environment Script: `scripts/prisma.ts`
 - Database Provider: PostgreSQL
 
 ## 🌐 API Documentation

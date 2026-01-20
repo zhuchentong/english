@@ -2,8 +2,8 @@ import fs from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
 import { PrismaPg } from '@prisma/adapter-pg'
+import { PrismaClient } from '@prisma/client'
 import { Pool } from 'pg'
-import { PrismaClient } from '../app/generated/prisma/client'
 
 const connectionString = process.env.DATABASE_URL!
 const pool = new Pool({ connectionString })

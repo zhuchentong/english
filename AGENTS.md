@@ -31,13 +31,28 @@ pnpm test:e2e                                 # E2E 测试
 ### 数据库命令
 
 ```bash
+# 标准命令 (开发环境默认）
 pnpm prisma:generate  # 生成 Prisma Client
-pnpm prisma:push      # 同步架构到数据库 (开发用)
-pnpm prisma:migrate   # 创建迁移文件并应用 (生产用)
+pnpm prisma:push      # 同步架构到开发数据库
+pnpm prisma:migrate   # 创建迁移文件并应用
 pnpm prisma:studio    # 打开 Prisma Studio GUI
 pnpm prisma:seed      # 从 CSV 导入数据
 pnpm prisma:reset     # 清空所有表
+
+# 环境切换脚本 (推荐用于测试环境）
+tsx ./scripts/prisma.ts push                    # 同步到开发数据库 (默认)
+tsx ./scripts/prisma.ts push --env=test         # 同步到测试数据库
+tsx ./scripts/prisma.ts studio --env=test        # 打开测试数据库 Studio
+tsx ./scripts/prisma.ts reset --env=test         # 重置测试数据库
+tsx ./scripts/prisma.ts seed --env=test         # 导入数据到测试数据库
+tsx ./scripts/prisma.ts generate                # 生成 Prisma Client
+tsx ./scripts/prisma.ts migrate dev             # 创建迁移 (默认: dev)
 ```
+
+**环境说明**：
+- `.env.development` → 开发数据库 `english`
+- `.env.test` → 测试数据库 `english_test`
+- 测试环境数据不会被 `beforeEach` 清除到开发数据库
 
 ### 代码质量
 
@@ -86,7 +101,7 @@ export const useWorkspace = () => {
 // ✅ 路径别名导入（非自动导入的内容）
 // - 源码文件中使用
 import { prisma } from '@/server/utils/db'
-import { Word } from '@/prisma'
+import type { Word } from '@prisma/client'
 import WsHeader from '@/components/workspace/WsHeader.vue'
 
 // - 测试文件中使用
@@ -109,7 +124,6 @@ import { prisma } from '../../../server/utils/db'
 - `@/` → `app/` (app 源码)
 - `@@/` → 根目录 (已弃用，不要使用)
 - `~/` → `app/` (Nuxt 测试环境推荐)
-- `@/prisma` → `app/generated/prisma/`
 - `@/server` → `server/`
 
 **测试文件路径别名使用**:
@@ -248,7 +262,7 @@ const client1 = new PrismaClient()
 
 ## 反模式 (禁止)
 
-- ❌ 提交 `node_modules/`, `.nuxt/`, `app/generated/prisma/`
+- ❌ 提交 `node_modules/`, `.nuxt/`
 - ❌ 使用 `any` 类型
 - ❌ 硬编码数据库凭证 (使用 .env)
 - ❌ 创建多个 PrismaClient 实例
@@ -263,13 +277,17 @@ const client1 = new PrismaClient()
 
 ## 项目独特风格
 
-- **Prisma 输出**: 自定义到 `app/generated/prisma/` (非 node_modules)
+- **Prisma**: 使用标准 `@prisma/client` (从 node_modules 导入)
 - **连接池**: 显式 PostgreSQL pool adapter (server/utils/db.ts)
 - **Seed 脚本**: 使用 `tsx` 直接运行 TypeScript
 - **数据导入**: CSV 中 phonetic/sentence 字段为 JSON 编码
 - **测试配置**: 使用 `@nuxt/test-utils/config` 的 `defineVitestConfig`，支持 multi-project 结构
 - **路径别名**: Unit 测试使用相对路径导入 server 代码，Nuxt 测试使用 `~/` 导入 app 代码
 - **E2E 测试**: 暂时跳过（`describe.skip`），@nuxt/test-utils v3.x E2E 支持仍在完善中
+- **环境分离**: 开发与测试环境完全隔离
+  - `.env.development` → 开发数据库
+  - `.env.test` → 测试数据库
+  - `scripts/prisma.ts` 统一环境切换接口
 
 ## 关键文件位置
 
@@ -277,6 +295,10 @@ const client1 = new PrismaClient()
 | ----------- | --------------------------------- |
 | 数据库架构  | `prisma/schema.prisma`            |
 | Prisma 单例 | `server/utils/db.ts`              |
+| Prisma 配置 | `prisma.config.ts`                |
+| Prisma 环境脚本 | `scripts/prisma.ts`              |
+| 开发环境变量 | `.env.development`                |
+| 测试环境变量 | `.env.test`                      |
 | 应用入口    | `app/app.vue`                     |
 | 布局文件    | `app/layouts/`                    |
 | 工作区组件  | `app/components/workspace/`       |
@@ -284,11 +306,15 @@ const client1 = new PrismaClient()
 | 路由页面    | `app/pages/`                      |
 | API 端点    | `server/api/`                     |
 | 测试文件    | `test/` (unit/nuxt/e2e 分类）     |
+| 测试设置    | `test/vitest.setup.ts`            |
 
 ## 注意事项
 
-- 首次克隆需运行: `pnpm prisma:generate`
-- 开发用 `prisma:push`，生产用 `prisma:migrate`
+- 首次克隆需运行:
+  - `tsx ./scripts/prisma.ts generate` (生成 Prisma Client)
+  - `tsx ./scripts/prisma.ts push` (同步开发数据库)
+  - `tsx ./scripts/prisma.ts push --env=test` (同步测试数据库)
+- 开发用 `tsx ./scripts/prisma.ts push`，生产用 `tsx ./scripts/prisma.ts migrate dev`
 - TypeScript 严格模式已启用 (strict: true)
 - 使用 TDD: 每次修改后运行测试
 

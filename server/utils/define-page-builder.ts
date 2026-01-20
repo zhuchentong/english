@@ -28,7 +28,7 @@ async function getPageBulderOptions(event: H3Event | PageBuilderOptions): Promis
 class PageBuilder {
   constructor(private readonly options: PageBuilderOptions) {}
 
-  toPageArgs(): any {
+  toPageArgs() {
     return {
       skip: this.options.pageIndex * this.options.pageSize,
       take: this.options.pageSize,

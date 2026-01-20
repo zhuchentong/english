@@ -3,8 +3,6 @@
     "paths": {
       "@/*": ["./app/*"],
       "@@/*": ["./*"],
-      "@/prisma": ["./app/generated/prisma"],
-      "@/prisma/*": ["./app/generated/prisma/*"],
       "@/server/*": ["./server/*"],
       "@/test": ["./test"],
       "@/test/*": ["./test/*"]

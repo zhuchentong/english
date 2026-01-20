@@ -2,7 +2,7 @@ import process from 'node:process'
 import dotenv from 'dotenv'
 import { defineConfig } from 'prisma/config'
 
-dotenv.config()
+dotenv.config({ path: '.env.development' })
 
 export default defineConfig({
   schema: 'prisma/schema.prisma',

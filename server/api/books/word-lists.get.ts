@@ -1,3 +1,4 @@
+import { HTTPError } from 'h3'
 import { prisma } from '../../utils/db'
 import { definePageBuilder } from '../../utils/define-page-builder'
 
@@ -33,9 +34,9 @@ export default defineEventHandler(async (event) => {
     }
   }
   catch {
-    throw createError({
-      statusCode: 500,
-      statusMessage: 'Failed to fetch word lists',
+    throw new HTTPError({
+      status: 500,
+      statusText: 'Failed to fetch word lists',
     })
   }
 })

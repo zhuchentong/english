@@ -1,15 +1,50 @@
-import { createError, defineEventHandler, getQuery } from 'h3'
+import type { Prisma } from '@prisma/client'
+import { defineEventHandler, getQuery, HTTPError } from 'h3'
 import { prisma } from '../../../utils/db'
 import { definePageBuilder } from '../../../utils/define-page-builder'
+
+type BookItemWithWord = Prisma.BookItemGetPayload<{
+  include: {
+    word: {
+      select: {
+        id: true
+        word: true
+        phoneticUK: true
+        phoneticUS: true
+        difficulty: true
+        viewCount: true
+        definitions: {
+          select: {
+            translation: true
+            englishDef: true
+          }
+          take: 1
+        }
+      }
+    }
+  }
+}>
+
+interface WordItem {
+  id: number
+  word: string
+  phoneticUK: string | null
+  phoneticUS: string | null
+  difficulty: number
+  viewCount: number
+  definition: string
+  itemId: number
+  addedAt: string
+}
 
 export default defineEventHandler(async (event) => {
   try {
     const id = Number(event.context.params?.id)
 
     if (Number.isNaN(id)) {
-      throw createError({
-        statusCode: 400,
-        statusMessage: 'Invalid book ID',
+      throw new HTTPError({
+        status: 400,
+        statusText: 'Invalid book ID',
       })
     }
 
@@ -18,9 +53,9 @@ export default defineEventHandler(async (event) => {
     })
 
     if (!bookExists) {
-      throw createError({
-        statusCode: 404,
-        statusMessage: 'Book not found',
+      throw new HTTPError({
+        status: 404,
+        statusText: 'Book not found',
       })
     }
 
@@ -31,47 +66,51 @@ export default defineEventHandler(async (event) => {
     const pageBuilder = await definePageBuilder({ pageIndex: page - 1, pageSize })
     const pageArgs = pageBuilder.toPageArgs()
 
-    const [items, total] = await Promise.all([
-      prisma.bookItem.findMany({
-        ...pageArgs,
-        where: {
-          bookId: id,
-        },
-        include: {
-          word: {
-            select: {
-              id: true,
-              word: true,
-              phoneticUK: true,
-              phoneticUS: true,
-              difficulty: true,
-              viewCount: true,
-              definitions: {
-                select: {
-                  translation: true,
-                  englishDef: true,
-                },
-                take: 1,
+    const queryResult = await prisma.bookItem.findMany({
+      ...pageArgs,
+      where: {
+        bookId: id,
+      },
+      include: {
+        word: {
+          select: {
+            id: true,
+            word: true,
+            phoneticUK: true,
+            phoneticUS: true,
+            difficulty: true,
+            viewCount: true,
+            definitions: {
+              select: {
+                translation: true,
+                englishDef: true,
               },
+              take: 1,
             },
           },
         },
-        orderBy: {
-          addedAt: 'desc',
-        },
-      }),
-      prisma.bookItem.count({
-        where: {
-          bookId: id,
-        },
-      }),
-    ])
+      },
+      orderBy: {
+        addedAt: 'desc',
+      },
+    })
 
-    const data = items.map(item => ({
-      ...item.word,
+    const [items, total] = [queryResult, await prisma.bookItem.count({
+      where: {
+        bookId: id,
+      },
+    })]
+
+    const data: WordItem[] = items.map((item: BookItemWithWord) => ({
+      id: item.word.id,
+      word: item.word.word,
+      phoneticUK: item.word.phoneticUK,
+      phoneticUS: item.word.phoneticUS,
+      difficulty: item.word.difficulty,
+      viewCount: item.word.viewCount,
+      definition: item.word.definitions[0]?.translation || '',
       itemId: item.id,
       addedAt: item.addedAt.toISOString(),
-      definition: item.word.definitions[0]?.translation || '',
     }))
 
     const totalPages = Math.ceil(total / pageSize)
@@ -91,9 +130,9 @@ export default defineEventHandler(async (event) => {
       throw error
     }
 
-    throw createError({
-      statusCode: 500,
-      statusMessage: 'Failed to fetch words from book',
+    throw new HTTPError({
+      status: 500,
+      statusText: 'Failed to fetch words from book',
     })
   }
 })

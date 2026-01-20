@@ -1,3 +1,5 @@
+import { HTTPError } from 'h3'
+
 interface Book {
   id: number
   name: string
@@ -45,9 +47,9 @@ export function useBook() {
       return response
     }
     catch {
-      throw createError({
-        statusCode: 500,
-        statusMessage: 'Failed to fetch words',
+      throw new HTTPError({
+        status: 500,
+        statusText: 'Failed to fetch words',
       })
     }
   }

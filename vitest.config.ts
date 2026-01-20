@@ -10,11 +10,8 @@ export default defineConfig({
   test: {
     setupFiles: ['./test/vitest.setup.ts'],
     fileParallelism: false,
-    env: {
-      DATABASE_URL: 'postgresql://english:dShJfXPXDZyrfb8i@101.42.135.204:5432/english',
-    },
     deps: {
-      moduleDirectories: ['node_modules', 'app/generated/prisma', 'app'],
+      moduleDirectories: ['node_modules', 'app'],
       interopDefault: true,
     },
     coverage: {
@@ -23,7 +20,6 @@ export default defineConfig({
       exclude: [
         'node_modules/',
         '.nuxt/',
-        'app/generated/',
         'dist/',
         '**/*.test.{ts,js}',
         '**/*.spec.{ts,js}',
