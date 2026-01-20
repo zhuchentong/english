@@ -17,7 +17,9 @@ import WsSidebar from '../components/workspace/WsSidebar.vue'
 
       <t-layout>
         <t-content class="ws-content">
-          <slot />
+          <div class="absolute inset-0 overflow-auto">
+            <slot />
+          </div>
         </t-content>
         <t-footer>
           <WsFooter />
@@ -41,6 +43,7 @@ import WsSidebar from '../components/workspace/WsSidebar.vue'
 .ws-content {
   overflow-y: auto;
   background-color: #f5f5f5;
+  position: relative;
 }
 
 :deep(.t-layout__footer) {

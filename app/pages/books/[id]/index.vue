@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { PageInfo } from 'tdesign-vue-next'
+
 interface Word {
   id: number
   word: string
@@ -21,7 +23,7 @@ const words = ref<Word[]>([])
 const pagination = ref({
   total: 0,
   page: 1,
-  pageSize: 20,
+  pageSize: 9,
   totalPages: 0,
 })
 const wordsPending = ref(false)
@@ -47,8 +49,8 @@ async function loadWords() {
   }
 }
 
-function handlePageChange(page: number) {
-  pagination.value.page = page
+function handlePageChange(page: PageInfo) {
+  pagination.value.page = page.current
   loadWords()
 }
 

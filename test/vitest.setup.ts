@@ -1,9 +1,8 @@
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { config } from 'dotenv'
-import { defineEventHandler, getQuery, H3Event, createError } from 'h3'
+import { createError, defineEventHandler, getQuery, H3Event } from 'h3'
 import { vi } from 'vitest'
-import { ref } from 'vue'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
