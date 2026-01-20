@@ -32,8 +32,8 @@ export default defineEventHandler(async (event) => {
     const tts = new UniversalEdgeTTS(word.word, voice)
     const result = await tts.synthesize()
 
-    event.res.headers.set('Content-Type', 'audio/mpeg')
-    event.res.headers.set('Cache-Control', 'public, max-age=86400')
+    event.node.res.setHeader('Content-Type', 'audio/mpeg')
+    event.node.res.setHeader('Cache-Control', 'public, max-age=86400')
 
     return result.audio
   }

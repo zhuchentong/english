@@ -35,6 +35,23 @@ function onPageChange(pageInfo: PageInfo) {
 function goBack() {
   router.push('/books')
 }
+
+async function playPronunciation(wordId: number, accent: 'uk' | 'us') {
+  try {
+    const response = await fetch(`/api/tts/words/${wordId}?accent=${accent}`)
+    if (!response.ok) {
+      throw new Error('Failed to fetch audio')
+    }
+    const blob = await response.blob()
+    const url = URL.createObjectURL(blob)
+    const audio = new Audio(url)
+    audio.play()
+    audio.onended = () => URL.revokeObjectURL(url)
+  }
+  catch (error) {
+    console.error('Failed to play pronunciation:', error)
+  }
+}
 </script>
 
 <template>
@@ -101,11 +118,15 @@ function goBack() {
             <span class="font-medium">{{ row.word }}</span>
           </template>
           <template #phoneticUK="{ row }">
-            <span v-if="row.phoneticUK" class="text-gray-500">{{ row.phoneticUK }}</span>
+            <t-button v-if="row.phoneticUK" type="text" @click="playPronunciation(row.id, 'uk')">
+              {{ row.phoneticUK }}
+            </t-button>
             <span v-else class="text-gray-300">-</span>
           </template>
           <template #phoneticUS="{ row }">
-            <span v-if="row.phoneticUS" class="text-gray-500">{{ row.phoneticUS }}</span>
+            <t-button v-if="row.phoneticUS" type="text" @click="playPronunciation(row.id, 'us')">
+              {{ row.phoneticUS }}
+            </t-button>
             <span v-else class="text-gray-300">-</span>
           </template>
           <template #difficulty="{ row }">
