@@ -1,7 +1,7 @@
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { config } from 'dotenv'
-import { defineEventHandler, getQuery, H3Event, HTTPError } from 'h3'
+import { defineEventHandler, getQuery, H3Event, createError } from 'h3'
 import { vi } from 'vitest'
 import { ref } from 'vue'
 
@@ -17,7 +17,7 @@ if (envResult.error) {
 // Set up globals for Nuxt server API tests
 globalThis.defineEventHandler = defineEventHandler
 globalThis.getQuery = getQuery
-globalThis.HTTPError = HTTPError
+globalThis.createError = createError
 globalThis.H3Event = H3Event
 
 // Mock Nuxt useFetch for composables testing

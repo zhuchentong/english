@@ -1,5 +1,5 @@
 import type { Prisma } from '@prisma/client'
-import { defineEventHandler, getQuery, HTTPError } from 'h3'
+import { createError, defineEventHandler, getQuery } from 'h3'
 import { prisma } from '../../../utils/db'
 import { definePageBuilder } from '../../../utils/define-page-builder'
 
@@ -42,7 +42,7 @@ export default defineEventHandler(async (event) => {
     const id = Number(event.context.params?.id)
 
     if (Number.isNaN(id)) {
-      throw new HTTPError({
+      throw createError({
         status: 400,
         statusText: 'Invalid book ID',
       })
@@ -53,7 +53,7 @@ export default defineEventHandler(async (event) => {
     })
 
     if (!bookExists) {
-      throw new HTTPError({
+      throw createError({
         status: 404,
         statusText: 'Book not found',
       })
@@ -130,7 +130,7 @@ export default defineEventHandler(async (event) => {
       throw error
     }
 
-    throw new HTTPError({
+    throw createError({
       status: 500,
       statusText: 'Failed to fetch words from book',
     })

@@ -1,4 +1,4 @@
-import { defineEventHandler, getQuery, HTTPError } from 'h3'
+import { createError, defineEventHandler, getQuery } from 'h3'
 import { prisma } from '../utils/db'
 import { definePageBuilder } from '../utils/define-page-builder'
 
@@ -35,7 +35,7 @@ export default defineEventHandler(async (event) => {
   }
   catch (error) {
     console.error('Failed to fetch books:', error)
-    throw new HTTPError({
+    throw createError({
       status: 500,
       statusText: 'Failed to fetch books',
     })

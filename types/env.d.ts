@@ -1,7 +1,7 @@
 interface TestGlobalThis {
   defineEventHandler: typeof import('h3').defineEventHandler
   getQuery: typeof import('h3').getQuery
-  HTTPError: typeof import('h3').HTTPError
+  createError: typeof import('h3').createError
   H3Event: typeof import('h3').H3Event
   useFetch: ReturnType<typeof import('vitest').vi.fn>
 }
@@ -10,7 +10,7 @@ interface TestGlobalThis {
 declare global {
   var defineEventHandler: TestGlobalThis['defineEventHandler']
   var getQuery: TestGlobalThis['getQuery']
-  var HTTPError: TestGlobalThis['HTTPError']
+  var createError: TestGlobalThis['createError']
   var H3Event: TestGlobalThis['H3Event']
   var useFetch: TestGlobalThis['useFetch']
 }
