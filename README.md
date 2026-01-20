@@ -11,7 +11,7 @@ A modern English vocabulary management and learning system built with Nuxt 4, Vu
 - Nuxt 4.2.2 + Vue 3.5.26 + TypeScript setup
 - PostgreSQL database with Prisma 7.2.0 ORM
 - Development environment configured (ESLint 9, pnpm)
-- Database schema designed for vocabulary management (Word, Definition, Example, UserWord, WordList, Tag)
+- Database schema designed for vocabulary management (Word, Definition, Example, UserWord, Book, Tag)
 
 ### 🚧 In Development
 
@@ -193,7 +193,7 @@ model User {
   updatedAt DateTime   @updatedAt
 
   userWords   UserWord[]
-  wordLists   WordList[]
+  books       Book[]
   favorites   Favorite[]
 }
 ```
@@ -215,7 +215,7 @@ model Word {
   tags       WordTag[]
   userWords  UserWord[]
   favorites  Favorite[]
-  wordLists  WordListItem[]
+  bookItems  BookItem[]
 }
 ```
 
@@ -272,9 +272,9 @@ model UserWord {
 }
 ```
 
-#### WordList & Tags Models
+#### Book & Tags Models
 
-- **WordList**: Custom vocabulary collections
+- **Book**: Custom vocabulary collections
 - **Tag**: Categorization system
 - **Favorite**: Bookmarked words
 
@@ -418,12 +418,12 @@ Returns all users with their associated posts (example endpoint).
 - `GET /api/stats/overview` - Learning statistics
 - `GET /api/stats/progress` - Learning progress
 
-#### Word Lists
+#### Books
 
-- `GET /api/word-lists` - List user's word lists
-- `POST /api/word-lists` - Create new word list
-- `GET /api/word-lists/:id` - Get word list details
-- `POST /api/word-lists/:id/words` - Add word to list
+- `GET /api/books` - List user's books
+- `POST /api/books` - Create new book
+- `GET /api/books/:id` - Get book details
+- `POST /api/books/:id/words` - Add word to book
 
 ## 🤝 Contributing
 

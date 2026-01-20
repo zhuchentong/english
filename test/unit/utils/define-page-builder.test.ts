@@ -1,6 +1,6 @@
-import { definePageBuilder } from '@@/server/utils/define-page-builder'
 import { describe, expect, it } from 'vitest'
-import { createMockEvent } from '../utils/createMockEvent'
+import { definePageBuilder } from '../../../server/utils/define-page-builder'
+import { createMockEvent } from './create-mock-event'
 
 describe('definePageBuilder function', () => {
   describe('with H3Event', () => {

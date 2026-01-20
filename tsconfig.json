@@ -5,7 +5,9 @@
       "@@/*": ["./*"],
       "@/prisma": ["./app/generated/prisma"],
       "@/prisma/*": ["./app/generated/prisma/*"],
-      "@/server/*": ["./server/*"]
+      "@/server/*": ["./server/*"],
+      "@/test": ["./test"],
+      "@/test/*": ["./test/*"]
     }
   },
   "references": [

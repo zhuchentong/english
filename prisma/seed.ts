@@ -160,8 +160,8 @@ async function createDefaultUser() {
 }
 
 // 创建单词书
-async function createWordList(userId: number, name: string, description?: string) {
-  const wordList = await prisma.wordList.create({
+async function createBook(userId: number, name: string, description?: string) {
+  const book = await prisma.book.create({
     data: {
       userId,
       name,
@@ -170,8 +170,8 @@ async function createWordList(userId: number, name: string, description?: string
       wordCount: 0, // 初始为 0，导入后更新
     },
   })
-  console.log(`✓ 创建单词书: ${wordList.name} (ID: ${wordList.id})`)
-  return wordList
+  console.log(`✓ 创建单词书: ${book.name} (ID: ${book.id})`)
+  return book
 }
 
 // 主导入函数
@@ -184,7 +184,7 @@ async function importWords() {
   const user = await createDefaultUser()
 
   // 创建单词书 "新概念英语第一册"
-  const wordList = await createWordList(user.id, '新概念英语第一册', '新概念英语第一册词汇表')
+  const book = await createBook(user.id, '新概念英语第一册', '新概念英语第一册词汇表')
 
   // 解析 CSV
   const rows = parseCSV(csvPath)
@@ -235,9 +235,9 @@ async function importWords() {
       }
 
       // 将单词添加到单词书
-      await prisma.wordListItem.create({
+      await prisma.bookItem.create({
         data: {
-          wordListId: wordList.id,
+          bookId: book.id,
           wordId: word.id,
         },
       })
@@ -254,8 +254,8 @@ async function importWords() {
   }
 
   // 更新单词书的单词数量
-  await prisma.wordList.update({
-    where: { id: wordList.id },
+  await prisma.book.update({
+    where: { id: book.id },
     data: { wordCount: successCount },
   })
   console.log(`✓ 更新单词书单词数量: ${successCount}`)
@@ -278,7 +278,7 @@ async function clearDatabase(prisma: any) {
   console.log('警告：这将删除所有数据！')
 
   // 清空所有表（按依赖顺序）
-  await prisma.wordListItem.deleteMany({})
+  await prisma.bookItem.deleteMany({})
   await prisma.userWord.deleteMany({})
   await prisma.favorite.deleteMany({})
   await prisma.wordTag.deleteMany({})
@@ -286,7 +286,7 @@ async function clearDatabase(prisma: any) {
   await prisma.definition.deleteMany({})
   await prisma.word.deleteMany({})
   await prisma.tag.deleteMany({})
-  await prisma.wordList.deleteMany({})
+  await prisma.book.deleteMany({})
   await prisma.user.deleteMany({})
 
   console.log('\n数据库清空完成！')

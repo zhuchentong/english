@@ -67,3 +67,4 @@ app/
 ## 相关文档
 
 - [TDesign Vue Next 文档 - 组件库](https://r.jina.ai/https://tdesign.tencent.com/vue-next/overview)
+- [Nuxt 4 文档](https://nuxt.com/llms-full.txt)

@@ -1,21 +1,13 @@
-import { prisma } from '@@/server/utils/db'
 import { beforeEach, describe, expect, it } from 'vitest'
-import { createMockEvent } from '../utils/createMockEvent'
+import { prisma } from '../../../server/utils/db'
+import { createMockEvent } from '../utils/create-mock-event'
+import { resetDB } from '../utils/reset-db'
 
-describe('word Lists API (GET /api/word-lists)', () => {
+describe('books API (GET /api/books)', () => {
   beforeEach(async () => {
-    await prisma.wordListItem.deleteMany()
-    await prisma.userWord.deleteMany()
-    await prisma.favorite.deleteMany()
-    await prisma.definition.deleteMany()
-    await prisma.exampleSentence.deleteMany()
-    await prisma.wordTag.deleteMany()
-    await prisma.wordList.deleteMany()
-    await prisma.word.deleteMany()
-    await prisma.tag.deleteMany()
-    await prisma.user.deleteMany()
+    await resetDB()
   })
-  it('should return paginated word lists with default parameters', async () => {
+  it('should return paginated books with default parameters', async () => {
     const user = await prisma.user.create({
       data: {
         email: `test-${Date.now()}@example.com`,
@@ -24,18 +16,18 @@ describe('word Lists API (GET /api/word-lists)', () => {
       },
     })
 
-    await prisma.wordList.create({
+    await prisma.book.create({
       data: { userId: user.id, name: 'Book 1', description: 'Description 1', isPublic: true, wordCount: 10 },
     })
-    await prisma.wordList.create({
+    await prisma.book.create({
       data: { userId: user.id, name: 'Book 2', description: 'Description 2', isPublic: false, wordCount: 20 },
     })
-    await prisma.wordList.create({
+    await prisma.book.create({
       data: { userId: user.id, name: 'Book 3', description: 'Description 3', isPublic: true, wordCount: 30 },
     })
 
-    const event = createMockEvent('http://localhost:3000/api/word-lists?page=1&pageSize=50')
-    const handler = (await import('@@/server/api/word-lists.get')).default
+    const event = createMockEvent('http://localhost:3000/api/books?page=1&pageSize=50')
+    const handler = (await import('../../../server/api/books.get')).default
     const result = await handler(event)
 
     expect(result).toHaveProperty('data')
@@ -63,7 +55,7 @@ describe('word Lists API (GET /api/word-lists)', () => {
     })
 
     for (let i = 1; i <= 10; i++) {
-      await prisma.wordList.create({
+      await prisma.book.create({
         data: {
           userId: user.id,
           name: `Book ${i}`,
@@ -72,8 +64,8 @@ describe('word Lists API (GET /api/word-lists)', () => {
       })
     }
 
-    const event = createMockEvent('http://localhost:3000/api/word-lists?page=2&pageSize=3')
-    const handler = (await import('@@/server/api/word-lists.get')).default
+    const event = createMockEvent('http://localhost:3000/api/books?page=2&pageSize=3')
+    const handler = (await import('../../../server/api/books.get')).default
     const result = await handler(event)
 
     expect(result.data).toHaveLength(3)
@@ -85,9 +77,9 @@ describe('word Lists API (GET /api/word-lists)', () => {
     })
   })
 
-  it('should return empty array when no word lists exist', async () => {
-    const event = createMockEvent('http://localhost:3000/api/word-lists')
-    const handler = (await import('@@/server/api/word-lists.get')).default
+  it('should return empty array when no books exist', async () => {
+    const event = createMockEvent('http://localhost:3000/api/books')
+    const handler = (await import('../../../server/api/books.get')).default
     const result = await handler(event)
 
     expect(result.data).toEqual([])
@@ -99,7 +91,7 @@ describe('word Lists API (GET /api/word-lists)', () => {
     })
   })
 
-  it('should sort word lists by createdAt DESC', async () => {
+  it('should sort books by createdAt DESC', async () => {
     const user = await prisma.user.create({
       data: {
         email: `test-${Date.now()}@example.com`,
@@ -108,18 +100,18 @@ describe('word Lists API (GET /api/word-lists)', () => {
       },
     })
 
-    await prisma.wordList.create({
+    await prisma.book.create({
       data: { userId: user.id, name: 'Book 1', wordCount: 10 },
     })
 
     await new Promise(resolve => setTimeout(resolve, 10))
 
-    await prisma.wordList.create({
+    await prisma.book.create({
       data: { userId: user.id, name: 'Book 2', wordCount: 20 },
     })
 
-    const event = createMockEvent('http://localhost:3000/api/word-lists')
-    const handler = (await import('@@/server/api/word-lists.get')).default
+    const event = createMockEvent('http://localhost:3000/api/books')
+    const handler = (await import('../../../server/api/books.get')).default
     const result = await handler(event)
 
     expect(result.data[0].name).toBe('Book 2')

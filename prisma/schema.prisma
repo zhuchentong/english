@@ -22,7 +22,7 @@ model User {
   updatedAt DateTime   @updatedAt
 
   userWords   UserWord[]
-  wordLists   WordList[]
+  books       Book[]
   favorites   Favorite[]
 }
 
@@ -45,7 +45,7 @@ model Word {
   tags       WordTag[]
   userWords  UserWord[]
   favorites  Favorite[]
-  wordLists  WordListItem[]
+  bookItems  BookItem[]
 
   @@index([word])
   @@index([difficulty])
@@ -125,33 +125,33 @@ model UserWord {
   @@index([nextReviewAt])
 }
 
-model WordList {
+model Book {
   id          Int        @id @default(autoincrement())
   userId      Int
-  name        String     // 单词本名称
+  name        String     // 单词书名称
   description String?    // 描述
   isPublic    Boolean    @default(false) // 是否公开
   wordCount   Int        @default(0) // 单词数量
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
 
-  user    User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  items   WordListItem[]
+  user  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items BookItem[]
 
   @@index([userId])
 }
 
-model WordListItem {
-  id        Int      @id @default(autoincrement())
-  wordListId Int
-  wordId     Int
-  addedAt    DateTime @default(now())
+model BookItem {
+  id      Int      @id @default(autoincrement())
+  bookId  Int
+  wordId  Int
+  addedAt DateTime @default(now())
 
-  wordList WordList @relation(fields: [wordListId], references: [id], onDelete: Cascade)
-  word     Word     @relation(fields: [wordId], references: [id], onDelete: Cascade)
+  book Book @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  word Word @relation(fields: [wordId], references: [id], onDelete: Cascade)
 
-  @@unique([wordListId, wordId])
-  @@index([wordListId])
+  @@unique([bookId, wordId])
+  @@index([bookId])
   @@index([wordId])
 }
 

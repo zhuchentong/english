@@ -19,18 +19,11 @@ function handleMenuChange(value: string) {
     :width="['232px', '64px']"
     @change="(value) => handleMenuChange(value as string)"
   >
-    <t-menu-item value="/words" to="/words">
+    <t-menu-item value="/books" to="/books">
       <template #icon>
         <t-icon name="book" />
       </template>
       单词书列表
-    </t-menu-item>
-
-    <t-menu-item value="/word-list" to="/word-list">
-      <template #icon>
-        <t-icon name="list" />
-      </template>
-      单词列表
     </t-menu-item>
 
     <template #operations>

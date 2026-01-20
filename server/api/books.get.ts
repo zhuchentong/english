@@ -1,3 +1,4 @@
+import { createError, defineEventHandler, getQuery } from 'h3'
 import { prisma } from '../utils/db'
 import { definePageBuilder } from '../utils/define-page-builder'
 
@@ -11,13 +12,13 @@ export default defineEventHandler(async (event) => {
     const pageArgs = pageBuilder.toPageArgs()
 
     const [data, total] = await Promise.all([
-      prisma.wordList.findMany({
+      prisma.book.findMany({
         ...pageArgs,
         orderBy: {
           createdAt: 'desc',
         },
       }),
-      prisma.wordList.count(),
+      prisma.book.count(),
     ])
 
     const totalPages = Math.ceil(total / pageSize)
@@ -32,10 +33,11 @@ export default defineEventHandler(async (event) => {
       },
     }
   }
-  catch {
+  catch (error) {
+    console.error('Failed to fetch books:', error)
     throw createError({
       statusCode: 500,
-      statusMessage: 'Failed to fetch word lists',
+      statusMessage: 'Failed to fetch books',
     })
   }
 })

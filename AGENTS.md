@@ -21,8 +21,10 @@ pnpm test                                     # 运行所有测试
 pnpm test:watch                               # 监听模式 (开发时持续运行)
 pnpm test:coverage                            # 覆盖率报告
 pnpm test:ui                                  # 测试 UI 界面
-pnpm test test/server/utils/db.test.ts         # 运行单个测试文件
+pnpm test test/unit/api/books.test.ts         # 运行单个测试文件
 pnpm test --grep "should create word"         # 运行匹配模式的测试
+pnpm test --project unit                      # 仅运行 unit 测试
+pnpm test --project nuxt                      # 仅运行 nuxt 测试
 pnpm test:e2e                                 # E2E 测试
 ```
 
@@ -52,9 +54,12 @@ pnpm lint:fix         # 自动修复 ESLint 问题
 - **布局文件**: `app/layouts/` (PascalCase: `default.vue`, `admin.vue`)
 - **组件**: `app/components/` (PascalCase: `WordCard.vue`)
   - **工作区组件**: `app/components/workspace/` (前缀 `Ws`: `WsHeader.vue`, `WsSidebar.vue`, `WsFooter.vue`)
-- **Composables**: `app/composables/` (camelCase 前缀 `use`: `useWords.ts`, `useWorkspace.ts`)
+- **Composables**: `app/composables/` (camelCase 前缀 `use`: `useBook.ts`, `useWords.ts`, `useWorkspace.ts`)
 - **API 路由**: `server/api/` (RESTful: `words.get.ts`, `words.post.ts`)
-- **测试文件**: 统一放在 `test/` 目录，按源码路径镜像，后缀 `.test.ts`
+- **测试文件**: 统一放在 `test/` 目录，按测试类型组织：
+  - `test/unit/` - 单元测试（API handlers、工具函数）
+  - `test/nuxt/` - Nuxt runtime 测试（Composables、组件）
+  - `test/e2e/` - E2E 测试
 
 ### 导入规范
 
@@ -79,9 +84,17 @@ export const useWorkspace = () => {
 }
 
 // ✅ 路径别名导入（非自动导入的内容）
+// - 源码文件中使用
 import { prisma } from '@/server/utils/db'
 import { Word } from '@/prisma'
 import WsHeader from '@/components/workspace/WsHeader.vue'
+
+// - 测试文件中使用
+//   • unit 测试（test/unit/）使用 `@/` 导入 server 代码
+//   • nuxt 测试（test/nuxt/）使用 `~/` 导入 app 代码
+import { prisma } from '@/server/utils/db'           // test/unit/
+import { useBook } from '~/composables/useBook'        // test/nuxt/
+import { createMockEvent } from '~/utils/createMockEvent'  // test/unit/
 
 // ❌ 避免相对路径
 import { prisma } from '../../../server/utils/db'
@@ -91,7 +104,19 @@ import { prisma } from '../../../server/utils/db'
 // import { useRoute, useRouter } from 'vue-router'
 ```
 
-**路径别名**: `@/` → `app/`, `@@/` → 根目录, `@/prisma` → `app/generated/prisma/`, `@/server` → `server/`
+**路径别名**:
+
+- `@/` → `app/` (app 源码)
+- `@@/` → 根目录 (已弃用，不要使用)
+- `~/` → `app/` (Nuxt 测试环境推荐)
+- `@/prisma` → `app/generated/prisma/`
+- `@/server` → `server/`
+
+**测试文件路径别名使用**:
+
+- `test/unit/` - 使用相对路径导入 server 代码（如 `../../../server/utils/db`）
+- `test/nuxt/` - 使用 `~/` 导入 app 代码（composables、组件）
+- `test/e2e/` - E2E 测试暂时跳过（`describe.skip`），等待 @nuxt/test-utils E2E 支持完善
 
 **自动导入列表**：
 
@@ -169,13 +194,35 @@ export default defineEventHandler(async (event) => {
 
 ### 测试风格 (TDD)
 
+#### 单元测试 (test/unit/)
+
 ```typescript
 import { beforeEach, describe, expect, it } from 'vitest'
-import { prisma } from '@/server/utils/db'
+import { prisma } from '../../../server/utils/db'
+import { createMockEvent } from '../../utils/createMockEvent'
 
 describe('Word API', () => {
   beforeEach(async () => { await prisma.word.deleteMany() })
-  it('should create a new word successfully', async () => { })
+  it('should create a new word successfully', async () => {
+    const event = createMockEvent('http://localhost:3000/api/words', { word: 'test' })
+    const handler = (await import('../../../server/api/words.post')).default
+    const result = await handler(event)
+    expect(result).toBeDefined()
+  })
+})
+```
+
+#### Nuxt Runtime 测试 (test/nuxt/)
+
+```typescript
+import { describe, expect, it } from 'vitest'
+import { useBook } from '~/composables/useBook'
+
+describe('useBook Composable', () => {
+  it('should provide selectedBookId reactive state', () => {
+    const { selectedBookId } = useBook()
+    expect(selectedBookId.value).toBeNull()
+  })
 })
 ```
 
@@ -212,6 +259,7 @@ const client1 = new PrismaClient()
 - ❌ 侧边栏 Menu 使用 `v-model:value` 绑定 computed 只读属性（应使用 `:value`）
 - ❌ 显式导入 Vue API（`import { ref, computed } from 'vue'` 或 `import { useRoute } from 'vue-router'`，应使用 AutoImport）
 - ❌ 在源码目录（`server/`、`app/`）下创建 `__tests__` 目录（所有测试必须放在 `test/` 目录）
+- ❌ 在 unit 测试中使用路径别名（如 `@/server/...`，应使用相对路径 `../../../server/...`）
 
 ## 项目独特风格
 
@@ -219,6 +267,9 @@ const client1 = new PrismaClient()
 - **连接池**: 显式 PostgreSQL pool adapter (server/utils/db.ts)
 - **Seed 脚本**: 使用 `tsx` 直接运行 TypeScript
 - **数据导入**: CSV 中 phonetic/sentence 字段为 JSON 编码
+- **测试配置**: 使用 `@nuxt/test-utils/config` 的 `defineVitestConfig`，支持 multi-project 结构
+- **路径别名**: Unit 测试使用相对路径导入 server 代码，Nuxt 测试使用 `~/` 导入 app 代码
+- **E2E 测试**: 暂时跳过（`describe.skip`），@nuxt/test-utils v3.x E2E 支持仍在完善中
 
 ## 关键文件位置
 
@@ -232,7 +283,7 @@ const client1 = new PrismaClient()
 | 工作区状态  | `app/composables/useWorkspace.ts` |
 | 路由页面    | `app/pages/`                      |
 | API 端点    | `server/api/`                     |
-| 测试文件    | `test/` (按源码路径镜像)          |
+| 测试文件    | `test/` (unit/nuxt/e2e 分类）     |
 
 ## 注意事项
 
@@ -240,3 +291,9 @@ const client1 = new PrismaClient()
 - 开发用 `prisma:push`，生产用 `prisma:migrate`
 - TypeScript 严格模式已启用 (strict: true)
 - 使用 TDD: 每次修改后运行测试
+
+## 参考文档
+
+- [Vitest 文档](https://r.jina.ai/https://vitest.dev/guide/)
+- [Vitest 配置](https://r.jina.ai/https://vitest.dev/config/)
+- [TypeScript 文档](https://r.jina.ai/https://www.typescriptlang.org/docs/)

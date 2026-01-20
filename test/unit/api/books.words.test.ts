@@ -1,22 +1,14 @@
-import { prisma } from '@@/server/utils/db'
 import { beforeEach, describe, expect, it } from 'vitest'
-import { createMockEvent } from '../../utils/createMockEvent'
+import { prisma } from '../../../server/utils/db'
+import { createMockEvent } from '../utils/create-mock-event'
+import { resetDB } from '../utils/reset-db'
 
-describe('word List Words API (GET /api/word-lists/:id/words)', () => {
+describe('book Words API (GET /api/books/:id/words)', () => {
   beforeEach(async () => {
-    await prisma.wordListItem.deleteMany()
-    await prisma.userWord.deleteMany()
-    await prisma.favorite.deleteMany()
-    await prisma.definition.deleteMany()
-    await prisma.exampleSentence.deleteMany()
-    await prisma.wordTag.deleteMany()
-    await prisma.wordList.deleteMany()
-    await prisma.word.deleteMany()
-    await prisma.tag.deleteMany()
-    await prisma.user.deleteMany()
+    await resetDB()
   })
 
-  it('should return paginated words from a word list with phonetics', async () => {
+  it('should return paginated words from a book with phonetics and definitions', async () => {
     const user = await prisma.user.create({
       data: {
         email: `test-${Date.now()}@example.com`,
@@ -25,7 +17,7 @@ describe('word List Words API (GET /api/word-lists/:id/words)', () => {
       },
     })
 
-    const wordList = await prisma.wordList.create({
+    const book = await prisma.book.create({
       data: {
         userId: user.id,
         name: 'Test Book',
@@ -33,24 +25,37 @@ describe('word List Words API (GET /api/word-lists/:id/words)', () => {
       },
     })
 
+    const wordsData = [
+      { word: 'hello', phoneticUK: '/həˈləʊ/', phoneticUS: '/həˈloʊ/', difficulty: 1 },
+      { word: 'world', phoneticUK: '/wɜːld/', phoneticUS: '/wɜːrld/', difficulty: 2 },
+      { word: 'test', phoneticUK: '/test/', phoneticUS: '/test/', difficulty: 1 },
+    ]
+
     await prisma.word.createMany({
-      data: [
-        { word: 'hello', phoneticUK: '/həˈləʊ/', phoneticUS: '/həˈloʊ/', difficulty: 1 },
-        { word: 'world', phoneticUK: '/wɜːld/', phoneticUS: '/wɜːrld/', difficulty: 2 },
-        { word: 'test', phoneticUK: '/test/', phoneticUS: '/test/', difficulty: 1 },
-      ],
+      data: wordsData,
     })
 
     const createdWords = await prisma.word.findMany()
-    await prisma.wordListItem.createMany({
+
+    for (const word of createdWords) {
+      await prisma.definition.create({
+        data: {
+          wordId: word.id,
+          translation: `${word.word} 的中文释义`,
+          englishDef: `${word.word} english definition`,
+        },
+      })
+    }
+
+    await prisma.bookItem.createMany({
       data: createdWords.map(word => ({
-        wordListId: wordList.id,
+        bookId: book.id,
         wordId: word.id,
       })),
     })
 
-    const event = createMockEvent(`http://localhost:3000/api/word-lists/${wordList.id}/words?page=1&pageSize=50`, { id: wordList.id.toString() })
-    const handler = (await import('@@/server/api/word-lists/[id]/words.get')).default
+    const event = createMockEvent(`http://localhost:3000/api/books/${book.id}/words?page=1&pageSize=50`, { id: book.id.toString() })
+    const handler = (await import('../../../server/api/books/[id]/words.get')).default
     const result = await handler(event)
 
     expect(result).toHaveProperty('data')
@@ -65,6 +70,7 @@ describe('word List Words API (GET /api/word-lists/:id/words)', () => {
       viewCount: expect.any(Number),
       itemId: expect.any(Number),
       addedAt: expect.any(String),
+      definition: expect.any(String),
     })
     expect(result.pagination).toMatchObject({
       total: 3,
@@ -74,17 +80,17 @@ describe('word List Words API (GET /api/word-lists/:id/words)', () => {
     })
   })
 
-  it('should return 404 when word list does not exist', async () => {
-    const event = createMockEvent('http://localhost:3000/api/word-lists/99999/words', { id: '99999' })
-    const handler = (await import('@@/server/api/word-lists/[id]/words.get')).default
+  it('should return 404 when book does not exist', async () => {
+    const event = createMockEvent('http://localhost:3000/api/books/99999/words', { id: '99999' })
+    const handler = (await import('../../../server/api/books/[id]/words.get')).default
 
     await expect(handler(event)).rejects.toMatchObject({
       statusCode: 404,
-      statusMessage: 'Word list not found',
+      statusMessage: 'Book not found',
     })
   })
 
-  it('should return empty array for word list with no words', async () => {
+  it('should return empty array for book with no words', async () => {
     const user = await prisma.user.create({
       data: {
         email: `test-${Date.now()}@example.com`,
@@ -93,7 +99,7 @@ describe('word List Words API (GET /api/word-lists/:id/words)', () => {
       },
     })
 
-    const wordList = await prisma.wordList.create({
+    const book = await prisma.book.create({
       data: {
         userId: user.id,
         name: 'Empty Book',
@@ -101,8 +107,8 @@ describe('word List Words API (GET /api/word-lists/:id/words)', () => {
       },
     })
 
-    const event = createMockEvent(`http://localhost:3000/api/word-lists/${wordList.id}/words`, { id: wordList.id.toString() })
-    const handler = (await import('@@/server/api/word-lists/[id]/words.get')).default
+    const event = createMockEvent(`http://localhost:3000/api/books/${book.id}/words`, { id: book.id.toString() })
+    const handler = (await import('../../../server/api/books/[id]/words.get')).default
     const result = await handler(event)
 
     expect(result.data).toEqual([])
@@ -123,7 +129,7 @@ describe('word List Words API (GET /api/word-lists/:id/words)', () => {
       },
     })
 
-    const wordList = await prisma.wordList.create({
+    const book = await prisma.book.create({
       data: {
         userId: user.id,
         name: 'Test Book',
@@ -140,16 +146,16 @@ describe('word List Words API (GET /api/word-lists/:id/words)', () => {
           difficulty: 1,
         },
       })
-      await prisma.wordListItem.create({
+      await prisma.bookItem.create({
         data: {
-          wordListId: wordList.id,
+          bookId: book.id,
           wordId: word.id,
         },
       })
     }
 
-    const event = createMockEvent(`http://localhost:3000/api/word-lists/${wordList.id}/words?page=2&pageSize=3`, { id: wordList.id.toString() })
-    const handler = (await import('@@/server/api/word-lists/[id]/words.get')).default
+    const event = createMockEvent(`http://localhost:3000/api/books/${book.id}/words?page=2&pageSize=3`, { id: book.id.toString() })
+    const handler = (await import('../../../server/api/books/[id]/words.get')).default
     const result = await handler(event)
 
     expect(result.data).toHaveLength(3)
@@ -170,7 +176,7 @@ describe('word List Words API (GET /api/word-lists/:id/words)', () => {
       },
     })
 
-    const wordList = await prisma.wordList.create({
+    const book = await prisma.book.create({
       data: {
         userId: user.id,
         name: 'Test Book',
@@ -181,8 +187,8 @@ describe('word List Words API (GET /api/word-lists/:id/words)', () => {
     const word1 = await prisma.word.create({
       data: { word: 'first', phoneticUK: '/fɜːst/', phoneticUS: '/fɜːrst/', difficulty: 1 },
     })
-    await prisma.wordListItem.create({
-      data: { wordListId: wordList.id, wordId: word1.id },
+    await prisma.bookItem.create({
+      data: { bookId: book.id, wordId: word1.id },
     })
 
     await new Promise(resolve => setTimeout(resolve, 10))
@@ -190,12 +196,12 @@ describe('word List Words API (GET /api/word-lists/:id/words)', () => {
     const word2 = await prisma.word.create({
       data: { word: 'second', phoneticUK: '/ˈsekənd/', phoneticUS: '/ˈsekənd/', difficulty: 1 },
     })
-    await prisma.wordListItem.create({
-      data: { wordListId: wordList.id, wordId: word2.id },
+    await prisma.bookItem.create({
+      data: { bookId: book.id, wordId: word2.id },
     })
 
-    const event = createMockEvent(`http://localhost:3000/api/word-lists/${wordList.id}/words`, { id: wordList.id.toString() })
-    const handler = (await import('@@/server/api/word-lists/[id]/words.get')).default
+    const event = createMockEvent(`http://localhost:3000/api/books/${book.id}/words`, { id: book.id.toString() })
+    const handler = (await import('../../../server/api/books/[id]/words.get')).default
     const result = await handler(event)
 
     expect(result.data[0].word).toBe('second')

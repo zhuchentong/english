@@ -1,29 +1,18 @@
 import { fileURLToPath } from 'node:url'
-import AutoImport from 'unplugin-auto-import/vite'
-import tsconfigPaths from 'vite-tsconfig-paths'
+import { defineVitestProject } from '@nuxt/test-utils/config'
 import { defineConfig } from 'vitest/config'
 
-export default defineConfig({
-  plugins: [
-    tsconfigPaths(),
-    AutoImport({
-      imports: ['vue', 'vue-router'],
-      dts: false,
-    }),
-  ],
-  resolve: {
-    alias: {
-      '@': fileURLToPath(new URL('./app', import.meta.url)),
-      '@@': fileURLToPath(new URL('.', import.meta.url)),
-    },
-    dedupe: ['@prisma/client'],
-    extensions: ['.ts', '.js', '.mjs', '.mts', '.cjs', '.json'],
-  },
+const rootDir = fileURLToPath(new URL('.', import.meta.url))
+const serverDir = fileURLToPath(new URL('./server', import.meta.url))
+const testUtilsDir = fileURLToPath(new URL('./test/unit/utils', import.meta.url))
 
+export default defineConfig({
   test: {
-    setupFiles: ['./vitest.setup.ts'],
-    environment: 'node',
+    setupFiles: ['./test/vitest.setup.ts'],
     fileParallelism: false,
+    env: {
+      DATABASE_URL: 'postgresql://english:dShJfXPXDZyrfb8i@101.42.135.204:5432/english',
+    },
     deps: {
       moduleDirectories: ['node_modules', 'app/generated/prisma', 'app'],
       interopDefault: true,
@@ -43,10 +32,45 @@ export default defineConfig({
         'coverage/',
       ],
     },
-    include: [
-      'test/**/*.{test,spec}.{ts,js}',
-    ],
-    exclude: ['node_modules', '.nuxt', 'dist', 'test/e2e/**', '**/*.e2e.{ts,js}'],
     reporters: ['verbose'],
+    projects: [
+      {
+        test: {
+          name: 'unit',
+          include: ['test/unit/**/*.{test,spec}.{ts,js}'],
+          environment: 'node',
+        },
+        resolve: {
+          alias: {
+            '@/server/utils/db': `${serverDir}/utils/db.ts`,
+            '@/server/utils/define-page-builder': `${serverDir}/utils/define-page-builder.ts`,
+            '@/server/api/books.get': `${serverDir}/api/books.get.ts`,
+            '@/server/api/books/[id]/words.get': `${serverDir}/api/books/[id]/words.get.ts`,
+            '~/utils/createMockEvent': `${testUtilsDir}/createMockEvent.ts`,
+            '~/utils/reset-db': `${testUtilsDir}/reset-db.ts`,
+          },
+        },
+      },
+      {
+        test: {
+          name: 'e2e',
+          include: ['test/e2e/**/*.{test,spec}.{ts,js}'],
+          environment: 'node',
+        },
+      },
+      await defineVitestProject({
+        test: {
+          name: 'nuxt',
+          include: ['test/nuxt/**/*.{test,spec}.{ts,js}'],
+          environment: 'nuxt',
+          environmentOptions: {
+            nuxt: {
+              rootDir,
+              domEnvironment: 'happy-dom',
+            },
+          },
+        },
+      }),
+    ],
   },
 })

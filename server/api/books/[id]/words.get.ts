@@ -1,3 +1,4 @@
+import { createError, defineEventHandler, getQuery } from 'h3'
 import { prisma } from '../../../utils/db'
 import { definePageBuilder } from '../../../utils/define-page-builder'
 
@@ -8,18 +9,18 @@ export default defineEventHandler(async (event) => {
     if (Number.isNaN(id)) {
       throw createError({
         statusCode: 400,
-        statusMessage: 'Invalid word list ID',
+        statusMessage: 'Invalid book ID',
       })
     }
 
-    const wordListExists = await prisma.wordList.findUnique({
+    const bookExists = await prisma.book.findUnique({
       where: { id },
     })
 
-    if (!wordListExists) {
+    if (!bookExists) {
       throw createError({
         statusCode: 404,
-        statusMessage: 'Word list not found',
+        statusMessage: 'Book not found',
       })
     }
 
@@ -31,10 +32,10 @@ export default defineEventHandler(async (event) => {
     const pageArgs = pageBuilder.toPageArgs()
 
     const [items, total] = await Promise.all([
-      prisma.wordListItem.findMany({
+      prisma.bookItem.findMany({
         ...pageArgs,
         where: {
-          wordListId: id,
+          bookId: id,
         },
         include: {
           word: {
@@ -45,6 +46,13 @@ export default defineEventHandler(async (event) => {
               phoneticUS: true,
               difficulty: true,
               viewCount: true,
+              definitions: {
+                select: {
+                  translation: true,
+                  englishDef: true,
+                },
+                take: 1,
+              },
             },
           },
         },
@@ -52,9 +60,9 @@ export default defineEventHandler(async (event) => {
           addedAt: 'desc',
         },
       }),
-      prisma.wordListItem.count({
+      prisma.bookItem.count({
         where: {
-          wordListId: id,
+          bookId: id,
         },
       }),
     ])
@@ -63,6 +71,7 @@ export default defineEventHandler(async (event) => {
       ...item.word,
       itemId: item.id,
       addedAt: item.addedAt.toISOString(),
+      definition: item.word.definitions[0]?.translation || '',
     }))
 
     const totalPages = Math.ceil(total / pageSize)
@@ -84,7 +93,7 @@ export default defineEventHandler(async (event) => {
 
     throw createError({
       statusCode: 500,
-      statusMessage: 'Failed to fetch words from word list',
+      statusMessage: 'Failed to fetch words from book',
     })
   }
 })

@@ -19,9 +19,15 @@ export default defineNuxtConfig({
     '@@': fileURLToPath(new URL('.', import.meta.url)),
     '@/prisma': fileURLToPath(new URL('./app/generated/prisma', import.meta.url)),
     '@/server': fileURLToPath(new URL('./server', import.meta.url)),
+    '@/test': fileURLToPath(new URL('./test', import.meta.url)),
   },
   typescript: {
     strict: true,
     typeCheck: false,
+    tsConfig: {
+      include: [
+        './test/**/*',
+      ],
+    },
   },
 })

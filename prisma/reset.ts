@@ -11,7 +11,7 @@ async function resetDatabase(prisma: PrismaClient) {
   console.log('警告：这将删除所有数据！')
 
   // 使用 deleteMany 清空表（按依赖顺序）
-  await prisma.wordListItem.deleteMany({})
+  await prisma.bookItem.deleteMany({})
   await prisma.userWord.deleteMany({})
   await prisma.favorite.deleteMany({})
   await prisma.wordTag.deleteMany({})
@@ -19,7 +19,7 @@ async function resetDatabase(prisma: PrismaClient) {
   await prisma.definition.deleteMany({})
   await prisma.word.deleteMany({})
   await prisma.tag.deleteMany({})
-  await prisma.wordList.deleteMany({})
+  await prisma.book.deleteMany({})
   await prisma.user.deleteMany({})
 
   console.log('\n数据库重置完成！')

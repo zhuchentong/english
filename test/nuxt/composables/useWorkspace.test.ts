@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { useWorkspace } from '@/composables/useWorkspace'
+import { useWorkspace } from '~/composables/useWorkspace'
 
 describe('useWorkspace', () => {
   it('should initialize with collapsed set to false', () => {
