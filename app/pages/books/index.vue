@@ -3,7 +3,7 @@ import type { PageInfo } from 'tdesign-vue-next'
 
 const router = useRouter()
 const { pagination, updatePage } = usePage(0, 10)
-const { data: books, pending } = useBook(pagination)
+const { data: books, pending } = await useBook(pagination)
 
 function onPageChange(pageInfo: PageInfo) {
   updatePage(pageInfo)

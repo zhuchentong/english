@@ -1,5 +1,5 @@
 import type { Prisma } from '@prisma/client'
-import type { Pagination } from './usePage'
+import type { PaginationData } from './usePage'
 
 type Book = Prisma.BookGetPayload<{
   select: {
@@ -20,24 +20,22 @@ interface PaginatedResponse<T> {
   pageTotal: number
 }
 
-export function useBook(pagination: Ref<Pagination>) {
+export async function useBook(pagination: ComputedRef<PaginationData>) {
   const { data, pending, error, refresh }
-    = useFetch<PaginatedResponse<Book>>('/api/books', {
-      query: {
+    = await useFetch<PaginatedResponse<Book>>('/api/books', {
+      query: computed(() => ({
         pageIndex: pagination.value.pageIndex,
         pageSize: pagination.value.pageSize,
-      },
-      default: () => ({ content: [], pageIndex: 0, pageSize: 10, total: 0, pageTotal: 0 }),
-      transform: (response) => {
-        if (response) {
-          pagination.value.pageTotal = response.pageTotal
-        }
-        return response
-      },
+      })),
     })
 
-  watch(() => [pagination.value.pageIndex, pagination.value.pageSize], async () => {
-    refresh()
+  watch(data, (value) => {
+    if (value) {
+      pagination.value.update({
+        total: value.total,
+        pageTotal: value.pageTotal,
+      })
+    }
   })
 
   return {

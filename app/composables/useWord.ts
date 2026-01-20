@@ -1,51 +1,28 @@
-import type { Pagination } from './usePage'
-
-interface Word {
-  id: number
-  word: string
-  phoneticUK: string | null
-  phoneticUS: string | null
-  difficulty: number
-  viewCount: number
-  definition: string
-  itemId: number
-  addedAt: string
-}
-
-interface PaginatedResponse<T> {
-  content: T[]
-  pageIndex: number
-  pageSize: number
-  total: number
-  pageTotal: number
-}
+import type { PaginationData } from './usePage'
 
 interface UseWordOptions {
   bookId: number
-  pagination: Ref<Pagination>
+  pagination: ComputedRef<PaginationData>
 }
 
-export function useWord({ bookId, pagination }: UseWordOptions) {
-  const wordsUrl = computed(() => `/api/books/${bookId}/words`)
+export async function useWord({ bookId, pagination }: UseWordOptions) {
+  const { data, pending, error, refresh } = await useFetch(`/api/books/${bookId}/words`, {
+    method: 'GET',
+    query: computed(() => ({
+      pageIndex: pagination.value.pageIndex,
+      pageSize: pagination.value.pageSize,
+    })),
+  })
 
-  const { data, pending, error, refresh }
-    = useFetch<PaginatedResponse<Word>>(wordsUrl, {
-      query: {
-        pageIndex: pagination.value.pageIndex,
-        pageSize: pagination.value.pageSize,
-      },
-      default: () => ({ content: [], pageIndex: 0, pageSize: 9, total: 0, pageTotal: 0 }),
-      immediate: false,
-      transform: (response) => {
-        if (response) {
-          pagination.value.pageTotal = response.pageTotal
-        }
-        return response
-      },
-    })
-
-  watch(() => [pagination.value.pageIndex, pagination.value.pageSize], async () => {
-    refresh()
+  watch(data, (value) => {
+    if (value) {
+      pagination.value.update({
+        total: value.total,
+        pageTotal: value.pageTotal,
+      })
+    }
+  }, {
+    immediate: true,
   })
 
   return {

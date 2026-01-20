@@ -18,7 +18,7 @@ const router = useRouter()
 const bookId = computed(() => Number(route.params.id))
 
 const { pagination, updatePage } = usePage(0, 9)
-const { data: words, pending: wordsPending } = useWord({
+const { data: words, pending: wordsPending } = await useWord({
   bookId: bookId.value!,
   pagination,
 })
@@ -28,7 +28,7 @@ const { data: book, pending: bookPending, error: bookError }
 
 const currentBook = computed(() => book.value)
 
-function handlePageChange(pageInfo: PageInfo) {
+function onPageChange(pageInfo: PageInfo) {
   updatePage(pageInfo)
 }
 
@@ -50,10 +50,13 @@ function goBack() {
       </template>
 
       <div v-if="bookError" class="flex flex-col items-center justify-center py-12">
-        <t-result theme="error" title="未找到该单词书" />
-        <t-button theme="primary" class="mt-4" @click="goBack">
-          返回列表
-        </t-button>
+        <t-empty type="fail" title="未找到该单词书" description="该单词书可能已被删除或不存在">
+          <template #action>
+            <t-button theme="primary" @click="goBack">
+              返回列表
+            </t-button>
+          </template>
+        </t-empty>
       </div>
 
       <template v-else>
@@ -81,12 +84,8 @@ function goBack() {
           </h3>
         </div>
 
-        <div v-if="wordsPending" class="flex justify-center py-8">
-          <t-loading size="large" />
-        </div>
-
         <t-table
-          v-else-if="words.length > 0"
+          :loading="wordsPending"
           :data="words"
           :columns="[
             { colKey: 'word', title: '单词', width: 150 },
@@ -116,15 +115,14 @@ function goBack() {
           </template>
         </t-table>
 
-        <t-empty v-else description="该单词书暂无单词" />
-
+        <t-empty v-if="words.length === 0" description="该单词书暂无单词" />
         <div v-if="pagination.pageTotal > 1" class="flex justify-center pt-4">
           <t-pagination
             v-model:current="pagination.current"
             v-model:page-size="pagination.pageSize"
             :total="pagination.total"
             show-jumper
-            @change="handlePageChange"
+            @change="onPageChange"
           />
         </div>
       </template>
