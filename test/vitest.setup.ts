@@ -8,7 +8,7 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
 // Load environment variables from .env
-const envResult = config({ path: join(__dirname, '.env.test') })
+const envResult = config({ path: join(__dirname, '../.env') })
 if (envResult.error) {
   console.warn('Failed to load .env file:', envResult.error)
 }
@@ -26,3 +26,21 @@ globalThis.useFetch = vi.fn(() => ({
   error: ref(null),
   refresh: vi.fn(),
 }))
+
+// Add Blob and URL polyfills for TTS tests
+globalThis.Blob = class Blob {
+  constructor(parts: any[] = [], options?: BlobPropertyBag) {
+    this.type = options?.type || ''
+    this.size = parts.reduce((acc: number, part: any) => acc + (part?.length || 0), 0)
+  }
+
+  type: string
+  size: number
+
+  arrayBuffer(): Promise<ArrayBuffer> {
+    return Promise.resolve(new ArrayBuffer(this.size))
+  }
+}
+
+globalThis.URL.createObjectURL = vi.fn(() => 'mock-blob-url')
+globalThis.URL.revokeObjectURL = vi.fn()
