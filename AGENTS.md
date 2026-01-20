@@ -22,7 +22,7 @@ pnpm test:watch                               # 监听模式 (开发时持续运
 pnpm test:coverage                            # 覆盖率报告
 pnpm test:ui                                  # 测试 UI 界面
 pnpm test test/unit/api/books.test.ts         # 运行单个测试文件
-pnpm test --grep "should create word"         # 运行匹配模式的测试
+pnpm test --grep "should return paginated"    # 运行匹配模式的测试
 pnpm test --project unit                      # 仅运行 unit 测试
 pnpm test --project nuxt                      # 仅运行 nuxt 测试
 pnpm test:e2e                                 # E2E 测试
@@ -31,14 +31,6 @@ pnpm test:e2e                                 # E2E 测试
 ### 数据库命令
 
 ```bash
-# 标准命令 (开发环境默认）
-pnpm prisma:generate  # 生成 Prisma Client
-pnpm prisma:push      # 同步架构到开发数据库
-pnpm prisma:migrate   # 创建迁移文件并应用
-pnpm prisma:studio    # 打开 Prisma Studio GUI
-pnpm prisma:seed      # 从 CSV 导入数据
-pnpm prisma:reset     # 清空所有表
-
 # 环境切换脚本 (推荐用于测试环境）
 tsx ./scripts/prisma.ts push                    # 同步到开发数据库 (默认)
 tsx ./scripts/prisma.ts push --env=test         # 同步到测试数据库
@@ -74,8 +66,12 @@ pnpm lint:fix         # 自动修复 ESLint 问题
 - **API 路由**: `server/api/` (RESTful: `words.get.ts`, `words.post.ts`)
 - **测试文件**: 统一放在 `test/` 目录，按测试类型组织：
   - `test/unit/` - 单元测试（API handlers、工具函数）
+    - `test/unit/api/` - API 路由测试
+    - `test/unit/utils/` - 测试工具函数（reset-db, create-mock-event, define-page-builder）
   - `test/nuxt/` - Nuxt runtime 测试（Composables、组件）
+  - `test/integration/` - 集成测试（外部服务真实调用）
   - `test/e2e/` - E2E 测试
+  - `test/vitest.setup.ts` - 测试环境配置（环境变量、mock、全局 polyfill）
 
 ### 导入规范
 
@@ -108,9 +104,9 @@ import WsHeader from '@/components/workspace/WsHeader.vue'
 // - 测试文件中使用
 //   • unit 测试（test/unit/）使用 `@/` 导入 server 代码
 //   • nuxt 测试（test/nuxt/）使用 `~/` 导入 app 代码
-import { prisma } from '@/server/utils/db'           // test/unit/
+import { prisma } from '../../../server/utils/db'           // test/unit/
 import { useBook } from '~/composables/useBook'        // test/nuxt/
-import { createMockEvent } from '~/utils/createMockEvent'  // test/unit/
+import { createMockEvent } from '../../utils/createMockEvent'  // test/unit/
 
 // ❌ 避免相对路径
 import { prisma } from '../../../server/utils/db'
@@ -130,7 +126,9 @@ import { prisma } from '../../../server/utils/db'
 **测试文件路径别名使用**:
 
 - `test/unit/` - 使用相对路径导入 server 代码（如 `../../../server/utils/db`）
+- `test/unit/utils/` - 测试工具函数目录，包含 `reset-db.ts`、`create-mock-event.ts`、`define-page-builder.test.ts`
 - `test/nuxt/` - 使用 `~/` 导入 app 代码（composables、组件）
+- `test/integration/` - 集成测试，使用真实外部服务调用
 - `test/e2e/` - E2E 测试暂时跳过（`describe.skip`），等待 @nuxt/test-utils E2E 支持完善
 
 **自动导入列表**：
@@ -187,13 +185,14 @@ const emit = defineEmits<{ select: [wordId: number] }>()
 </script>
 ```
 
-````vue
+```vue
 <!-- 使用布局 -->
 <template>
   <NuxtLayout>
     <NuxtPage />
   </NuxtLayout>
 </template>
+```
 
 ### API 路由风格
 ```typescript
@@ -205,7 +204,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 500, statusMessage: 'Failed to fetch words' })
   }
 })
-````
+```
 
 ### 测试风格 (TDD)
 
@@ -272,7 +271,7 @@ const db = new PrismaClient({ datasourceUrl: config.databaseUrl })
 1. RED → GREEN → REFACTOR 循环
 2. 先写测试，再写实现
 3. 测试必须独立运行，无执行顺序依赖
-4. 测试名称清晰描述期望行为: `should create word successfully`
+4. 测试名称清晰描述期望行为: `should return paginated books with default parameters`
 5. 边界测试: 最小值、最大值、空值、null/undefined
 6. 使用 beforeEach/afterEach 隔离测试数据
 
@@ -290,6 +289,7 @@ const db = new PrismaClient({ datasourceUrl: config.databaseUrl })
 - ❌ 显式导入 Vue API（`import { ref, computed } from 'vue'` 或 `import { useRoute } from 'vue-router'`，应使用 AutoImport）
 - ❌ 在源码目录（`server/`、`app/`）下创建 `__tests__` 目录（所有测试必须放在 `test/` 目录）
 - ❌ 在 unit 测试中使用路径别名（如 `@/server/...`，应使用相对路径 `../../../server/...`）
+- ❌ 在 test/unit/utils/ 外创建测试工具函数（应统一放在 `test/unit/utils/` 目录）
 
 ## 项目独特风格
 
@@ -322,8 +322,12 @@ const db = new PrismaClient({ datasourceUrl: config.databaseUrl })
 | 工作区状态      | `app/composables/useWorkspace.ts` |
 | 路由页面        | `app/pages/`                      |
 | API 端点        | `server/api/`                     |
-| 测试文件        | `test/` (unit/nuxt/e2e 分类）     |
+| 测试文件        | `test/` (unit/nuxt/e2e/integration 分类） |
 | 测试设置        | `test/vitest.setup.ts`            |
+| 测试工具函数    | `test/unit/utils/`                |
+| 集成测试        | `test/integration/`               |
+| 验证工具        | `server/utils/use-safe-validate.ts` |
+| TTS 验证        | `server/utils/validate-tts.ts`    |
 
 ## 注意事项
 
@@ -335,8 +339,241 @@ const db = new PrismaClient({ datasourceUrl: config.databaseUrl })
 - TypeScript 严格模式已启用 (strict: true)
 - 使用 TDD: 每次修改后运行测试
 
+## app/ 应用目录详解
+
+**用途**: 应用根目录 - 主应用组件和页面/组件
+
+### 概述
+
+Nuxt 4 应用目录，使用文件路由和自动导入。包含完整的页面、组件、布局和组合式函数。
+
+### 目录结构
+
+```
+app/
+├── app.vue                          # 根组件 (引入 CSS Reset + NuxtLayout)
+├── pages/                           # 页面路由
+│   ├── index.vue                    # 首页 (/)
+│   ├── books/
+│   │   ├── index.vue                # 单词书列表页 (/books)
+│   │   └── [id]/index.vue           # 单词书详情页 (/books/:id)
+├── layouts/                         # 布局
+│   └── default.vue                  # 默认布局 (工作区 Header + Sidebar + Content + Footer)
+├── components/                      # 组件
+│   └── workspace/                   # 工作区组件
+│       ├── WsHeader.vue             # Header 组件 (Logo + 项目标题)
+│       ├── WsSidebar.vue            # Sidebar 组件 (TDesign Menu)
+│       └── WsFooter.vue             # Footer 组件 (版本信息和版权)
+└── composables/                     # 组合式函数 (自动导入)
+    ├── useBook.ts                   # 单词书相关逻辑
+    ├── useWord.ts                   # 单词相关逻辑
+    ├── usePage.ts                   # 分页相关逻辑
+    └── useWorkspace.ts             # 工作区状态 (侧边栏折叠等)
+```
+
+### 快速定位
+
+| 任务       | 位置                         | 说明                        |
+| ---------- | ---------------------------- | --------------------------- |
+| 根组件     | `app.vue`                    | CSS Reset + NuxtLayout      |
+| 首页       | `pages/index.vue`            | 应用首页                    |
+| 单词书列表 | `pages/books/index.vue`      | 单词书列表页                |
+| 单词书详情 | `pages/books/[id]/index.vue` | 单词书详情页                |
+| 布局       | `layouts/default.vue`        | 默认工作区布局              |
+| 工作区组件 | `components/workspace/`      | Header, Sidebar, Footer 组件 |
+| 组合式函数 | `composables/`               | useBook, useWord, usePage, useWorkspace |
+
+### 约定规范
+
+#### 文件路由
+
+- `pages/index.vue` → `/` 路由
+- `pages/about.vue` → `/about` 路由
+- `pages/blog/[slug].vue` → `/blog/:slug` 动态路由
+
+#### 根组件 (app.vue)
+
+- 应用根组件 (不是页面)
+- 使用 `<NuxtPage />` 渲染页面 (而非 `<NuxtWelcome />`)
+- 使用 `<NuxtLayout />` 应用布局 (创建布局后)
+
+#### 组件 (components/)
+
+- 自动导入，无需显式引入
+- PascalCase 命名: `WordCard.vue`, `SearchBar.vue`
+- `components/base/` → 基础组件
+- `components/features/` → 功能组件
+
+#### 组合式函数 (composables/)
+
+- 自动导入，无需显式引入
+- camelCase 命名 + `use` 前缀: `useWords.ts`, `useAuth.ts`
+- 返回响应式数据和方法
+- 可在组件和页面中复用
+
+#### 页面 (pages/)
+
+- Nuxt 4 使用 `app/pages/` 而非根 `pages/`
+- 文件名即路由路径
+- 支持嵌套路由、动态路由、中间件
+
+## server/ 服务器端详解
+
+**用途**: 服务器端工具和 API 路由 (H3 运行时)
+
+### 概述
+
+服务器端代码，包含 Prisma 单例、API 路由和工具函数。
+
+### 目录结构
+
+```
+server/
+├── api/              # API 路由处理器
+│   ├── books.get.ts                  # GET /api/books - 获取单词书列表
+│   ├── books/[id].get.ts             # GET /api/books/:id - 获取单个单词书
+│   ├── books/[id]/words.get.ts       # GET /api/books/:id/words - 获取单词书单词列表
+│   └── tts/words/[id].get.ts         # GET /api/tts/words/:id - 获取单词发音
+├── middleware/                       # 服务器中间件 (待添加)
+└── utils/
+    ├── db.ts                         # Prisma Client 单例 + PostgreSQL 连接池
+    ├── use-safe-validate.ts          # Zod 验证工具 (useSafeBody/Query/Params)
+    ├── validate-tts.ts               # TTS API 参数验证 Schema
+    └── define-page-builder.ts        # 页面构建器工具函数
+```
+
+### 快速定位
+
+| 任务       | 位置                              | 说明                        |
+| ---------- | --------------------------------- | --------------------------- |
+| 数据库访问 | `utils/db.ts`                     | 单例 + 连接池 + 热重载支持  |
+| 单词书 API | `api/books.get.ts`                | 获取单词书列表（分页）      |
+| 单词 API   | `api/books/[id]/words.get.ts`     | 获取单词书单词列表（分页）  |
+| TTS API    | `api/tts/words/[id].get.ts`       | 获取单词发音音频            |
+| 服务器工具 | `utils/*.ts`                      | 共享服务器函数              |
+| 验证工具   | `utils/use-safe-validate.ts`      | Zod 验证工具                |
+| TTS 验证   | `utils/validate-tts.ts`           | TTS 参数验证 Schema         |
+
+### 约定规范
+
+#### Prisma 单例模式
+
+- 从 `utils/db.ts` 导出 `prisma` (服务器全局自动导入)
+- 生产环境: 每个服务器生命周期单例
+- 开发环境: 持久化到 `globalThis` 支持热重载
+- 使用 PostgreSQL 连接池 (`@prisma/adapter-pg`) 而非直接连接
+
+#### API 路由结构
+
+- 文件路由: `api/words.get.ts` → `GET /api/words`
+- H3 处理器签名: `export default defineEventHandler((event) => {...})`
+- 直接使用 `prisma` (无需导入，从 utils/db.ts 自动导入)
+
+#### 自动导入机制
+
+- 所有 `utils/*.ts` 导出内容自动服务器级导入
+- 无需手动导入: `prisma` 在所有 API 路由中可用
+- 路径别名 `@/server/*` 映射到 server/ 目录
+
+#### 错误处理
+
+```typescript
+export default defineEventHandler(async (event) => {
+  try {
+    const words = await prisma.word.findMany()
+    return words
+  }
+  catch (error) {
+    throw createError({
+      statusCode: 500,
+      statusMessage: 'Failed to fetch words'
+    })
+  }
+})
+```
+
+### 反模式 (禁止行为)
+
+- ❌ 在 API 路由中创建新的 PrismaClient 实例 (使用单例)
+- ❌ 直接导入 PrismaClient (使用 utils/db.ts 导出的 `prisma`)
+- ❌ 在 API 路由中使用 `.env` 值 (通过 `process.env` 或 `useRuntimeConfig` 读取)
+- ❌ 跳过 API 路由中的验证 (使用 zod 等验证请求体)
+- ❌ 在 utils/ 中混合客户端和服务器代码 (server/ 仅限服务器端)
+
+## Prisma 数据库层详解
+
+**用途**: 数据库架构、种子脚本和迁移工具
+
+### 概述
+
+英语单词学习系统的数据库架构、数据导入和管理工具。
+
+### 目录结构
+
+```
+prisma/
+├── schema.prisma          # 10 个模型，词汇管理架构
+├── seed.ts                # CSV 导入器 + JSON 解析逻辑
+└── reset.ts               # 数据库清空工具
+```
+
+### 快速定位
+
+| 任务       | 位置            | 说明                                                 |
+| ---------- | --------------- | ---------------------------------------------------- |
+| 架构模型   | `schema.prisma` | User, Word, Definition, ExampleSentence, UserWord 等 |
+| CSV 导入   | `seed.ts`       | 解析 words/新概念英语第一册.csv (JSON 字段)          |
+| 数据库重置 | `reset.ts`      | 通过 deleteMany 清空所有表                           |
+
+### 约定规范
+
+#### 架构模型
+
+- 10 个模型分 3 大类: 用户管理、单词管理、用户学习
+- 所有外键级联删除 (onDelete: Cascade)
+- 索引字段: word, difficulty, userId, wordId, nextReviewAt
+- 唯一约束: User.email, Word.word, UserWord(userId, wordId)
+
+#### CSV 数据格式
+
+- `phonetic`: JSON 对象 `{uk: "...", us: "..."}`
+- `sentence`: JSON 数组 `[{cn_sentence: "...", origin_sentence: "..."}]`
+- `translation`: 分号分隔，带词性前缀 (如: "v.原谅；n.借口")
+- CSV 字段中的双引号需转义
+
+#### 种子导入流程
+
+- 运行器: `tsx prisma/seed.ts` (直接执行 TypeScript)
+- 数据源: `words/新概念英语第一册.csv`
+- 自动创建系统用户和单词本
+- 解析多部分定义和每个单词的多个例句
+
+#### 迁移策略
+
+- 开发环境: `tsx ./scripts/prisma.ts push` (无迁移文件)
+- 生产环境: `tsx ./scripts/prisma.ts migrate dev` (版本化迁移)
+
+#### 连接模式
+
+- 使用 `@prisma/adapter-pg` + 显式 `Pool` 实例
+- 与 server/utils/db.ts 中的单例模式一致
+
+### 反模式 (禁止行为)
+
+- ❌ Prisma 操作使用 `any` 类型
+- ❌ 提交 `prisma/migrations/` 直到生产就绪 (开发用 push)
+- ❌ 创建后手动编辑迁移文件
+- ❌ 在生产环境运行 seed 脚本 (使用适当的数据管理)
+- ❌ 重复数据库清空逻辑 (seed.ts:271-280 和 reset.ts:13-22 重复)
+
 ## 参考文档
 
 - [Vitest 文档](https://r.jina.ai/https://vitest.dev/guide/)
 - [Vitest 配置](https://r.jina.ai/https://vitest.dev/config/)
 - [TypeScript 文档](https://r.jina.ai/https://www.typescriptlang.org/docs/)
+- [TDesign Vue Next 文档 - 组件库](https://r.jina.ai/https://tdesign.tencent.com/vue-next/overview)
+- [Nuxt 4 文档](https://nuxt.com/llms-full.txt)
+- [H3 文档 - 路由](https://r.jina.ai/https://h3.unjs.io/guide/routing)
+- [Prisma 文档 - 数据库连接](https://r.jina.ai/https://www.prisma.io/docs/concepts/components/prisma-client/connection-management)
+- [Zod 文档 - 验证](https://zod.dev/llms.txt)
+- [Prisma 文档 - PostgreSQL 数据库](https://r.jina.ai/https://www.prisma.io/docs/postgresql)
