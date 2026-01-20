@@ -84,7 +84,7 @@ function loadEnv(env: 'development' | 'test'): NodeJS.ProcessEnv {
   }
 
   console.log(`📁 使用环境文件: ${envFile}`)
-  console.log(`🗄️  数据库: ${getDbName(process.env.NUXT_DATABASE_URL)}`)
+  console.log(`🗄️  数据库: ${getDbName(process.env.NUXT_DATABASE_URL!)}`)
   console.log('')
 
   return process.env

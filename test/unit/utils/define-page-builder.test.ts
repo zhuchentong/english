@@ -121,7 +121,7 @@ describe('page builder toPageResponse method', () => {
     const content = [{ id: 1 }, { id: 2 }, { id: 3 }]
     const total = 25
 
-    const response = pageBuilder.toPageRespnose(content, total)
+    const response = pageBuilder.toPageResponse(content, total)
 
     expect(response).toEqual({
       content,
@@ -137,7 +137,7 @@ describe('page builder toPageResponse method', () => {
     const content = Array.from({ length: 10 }).map((_, i) => ({ id: i + 1 }))
     const total = 10
 
-    const response = pageBuilder.toPageRespnose(content, total)
+    const response = pageBuilder.toPageResponse(content, total)
 
     expect(response.pageTotal).toBe(1)
   })
@@ -147,7 +147,7 @@ describe('page builder toPageResponse method', () => {
     const content = [{ id: 1 }]
     const total = 11
 
-    const response = pageBuilder.toPageRespnose(content, total)
+    const response = pageBuilder.toPageResponse(content, total)
 
     expect(response.pageTotal).toBe(2)
   })
@@ -157,7 +157,7 @@ describe('page builder toPageResponse method', () => {
     const content: any[] = []
     const total = 0
 
-    const response = pageBuilder.toPageRespnose(content, total)
+    const response = pageBuilder.toPageResponse(content, total)
 
     expect(response).toEqual({
       content: [],
@@ -173,7 +173,7 @@ describe('page builder toPageResponse method', () => {
     const content = [{ id: 21 }, { id: 22 }, { id: 23 }]
     const total = 23
 
-    const response = pageBuilder.toPageRespnose(content, total)
+    const response = pageBuilder.toPageResponse(content, total)
 
     expect(response).toEqual({
       content,

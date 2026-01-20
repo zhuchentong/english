@@ -1,6 +1,6 @@
 import type { H3Event } from 'h3'
-import { getValidatedQuery } from 'h3'
 import { z } from 'zod'
+import { useSafeQuery } from './use-safe-validate'
 
 export interface PageBuilderOptions {
   pageIndex: number
@@ -17,7 +17,7 @@ async function getPageBuilderOptions(event: H3Event | PageBuilderOptions): Promi
     return event as PageBuilderOptions
   }
   else {
-    const { pageIndex, pageSize } = await getValidatedQuery(event, PageLikeSchema)
+    const { pageIndex, pageSize } = await useSafeQuery(event, PageLikeSchema)
     return {
       pageIndex,
       pageSize,

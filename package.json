@@ -16,18 +16,11 @@
     "test:ui": "vitest --ui",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
-    "test:e2e:debug": "playwright test --debug",
-    "prisma:generate": "prisma generate",
-    "prisma:migrate": "prisma migrate dev",
-    "prisma:push": "prisma db push",
-    "prisma:studio": "prisma studio",
-    "prisma:seed": "prisma db seed",
-    "prisma:reset": "tsx prisma/reset.ts"
+    "test:e2e:debug": "playwright test --debug"
   },
   "dependencies": {
     "@prisma/adapter-pg": "7.2.0",
     "@prisma/client": "7.2.0",
-    "h3": "2.0.1-rc.11",
     "nuxt": "4.2.2",
     "pg": "^8.17.1",
     "tdesign-vue-next": "1.18.0",
@@ -59,8 +52,5 @@
     "vite-tsconfig-paths": "6.0.4",
     "vitest": "4.0.17",
     "vue-tsc": "3.2.2"
-  },
-  "prisma": {
-    "seed": "tsx prisma/seed.ts"
   }
 }
