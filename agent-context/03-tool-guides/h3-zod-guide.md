@@ -53,3 +53,5 @@ export default defineEventHandler(async (event) => {
   // ...
 })
 ```
+
+> **参考文档**：[Zod 文档](https://zod.dev/llms.txt) | [H3 验证集成](https://r.jina.ai/https://h3.unjs.io/guide/routing#validation)

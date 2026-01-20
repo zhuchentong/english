@@ -76,3 +76,23 @@ export async function resetDB() {
 | `pnpm test --project nuxt` | 仅 nuxt 测试 |
 | `pnpm test:watch` | 监听模式 |
 | `pnpm test --grep "pattern"` | 运行匹配模式的测试 |
+
+## Mock 外部依赖
+
+### vi.mock
+
+项目使用 `vi.mock` mock 外部模块：
+
+```typescript
+// test/unit/api/tts.words.test.ts
+vi.mock('edge-tts-universal', () => ({
+  getVoices: vi.fn().mockResolvedValue([...]),
+  textToSpeech: vi.fn().mockResolvedValue('audio-url'),
+}))
+```
+
+### HTTP 请求 Mock
+
+对于 HTTP 请求，推荐 mock 外部 API 依赖模块。
+
+> **参考文档**：[Vitest 指南](https://r.jina.ai/https://vitest.dev/guide/)

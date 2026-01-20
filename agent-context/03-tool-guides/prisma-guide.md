@@ -62,3 +62,5 @@ await prisma.$transaction(async (tx) => {
 - ❌ 严禁在 API 路由中创建新的 PrismaClient 实例
 - ❌ 严禁使用 `any` 类型
 - ✅ 所有外键使用级联删除 (`onDelete: Cascade`)
+
+> **参考文档**：[Prisma 连接管理](https://r.jina.ai/https://www.prisma.io/docs/concepts/components/prisma-client/connection-management) | [Prisma PostgreSQL](https://r.jina.ai/https://www.prisma.io/docs/postgresql)

@@ -10,6 +10,8 @@ Nuxt 4 使用 `app/pages/` 目录实现基于文件的路由：
 | `app/pages/books/index.vue` | `/books` | 单词书列表 |
 | `app/pages/books/[id]/index.vue` | `/books/:id` | 单词书详情 |
 
+> **参考文档**：[Nuxt 4 文档](https://nuxt.com/llms-full.txt)
+
 ## AutoImport 自动导入
 
 Nuxt 4 自动导入以下内容：

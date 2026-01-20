@@ -39,3 +39,5 @@ Reset 类型: `tailwind-compat`
 | `text-xl` | 字体大小 |
 | `font-bold` | 字体加粗 |
 | `flex` | 弹性布局 |
+
+> **参考文档**：[UnoCSS 文档](https://r.jina.ai/https://unocss.dev/)
