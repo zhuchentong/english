@@ -43,6 +43,7 @@
 
 ### 6. 快速参考
 - [速查表](./agent-context/06-reference/cheatsheet.md)
+- [系统命令参考](./agent-context/06-reference/terminal-commands.md)
 - [常见错误及解决](./agent-context/06-reference/common-errors.md)
 - [常见问题解答](./agent-context/06-reference/faq.md)
 - [在线参考资源](./agent-context/06-reference/resources.md)
@@ -84,3 +85,5 @@
 | `pnpm test` | 运行所有测试 |
 | `pnpm lint` | ESLint 检查 |
 | `tsx ./scripts/prisma.ts push` | 同步数据库 |
+
+> **重要提示**：在执行任何系统命令（如 `ls`、`dir`、`cat`、`type` 等）前，请先阅读 [系统命令参考](./agent-context/06-reference/terminal-commands.md)，确保使用当前操作系统的正确命令。
