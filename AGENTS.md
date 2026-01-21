@@ -26,7 +26,7 @@
 - [Prisma 开发指南](./agent-context/03-tool-guides/prisma-guide.md)
 - [TDesign 使用指南](./agent-context/03-tool-guides/tdesign-guide.md)
 - [UnoCSS 使用指南](./agent-context/03-tool-guides/unocss-guide.md)
-- [H3 + Zod 验证指南](./agent-context/03-tool-guides/h3-zod-guide.md)
+
 - [测试指南](./agent-context/03-tool-guides/testing-guide.md)
 
 ### 4. 代码模式
@@ -62,6 +62,11 @@
 
 **特殊指令**:
 - 所有代码必须符合项目编码规范
+- 所有代码必须包含详细的中文注释，注释需符合 JSDOC 规范：
+  - 函数/方法必须包含 @description、@param、@returns 标签
+  - 类/接口必须包含 @description 标签
+  - 复杂业务逻辑需要添加 @example 示例
+  - TypeScript 类型定义需要说明用途
 - 数据库操作使用 Prisma 单例
 - API 响应使用标准化分页格式
 - 遵循 TDD 开发流程

@@ -58,7 +58,7 @@ interface PaginatedResponse<T> {
 
 ## 参数验证
 
-使用 `h3-zod` 集成：
+使用 H3 内置的 `getValidated*` 函数配合 Zod 进行类型安全的请求验证：
 
 ```typescript
 // server/api/tts/words/[id].get.ts

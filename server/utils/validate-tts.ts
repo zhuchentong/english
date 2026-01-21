@@ -1,4 +1,4 @@
-import { z } from 'h3-zod'
+import { z } from 'zod'
 
 export const WordIdSchema = z.object({
   id: z.coerce.number().int().positive('Word ID must be a positive integer'),
@@ -6,6 +6,6 @@ export const WordIdSchema = z.object({
 
 export const AccentSchema = z.object({
   accent: z.enum(['uk', 'us'], {
-    errorMap: () => ({ message: 'Accent must be \'uk\' or \'us\'' }),
+    error: () => ({ message: 'Accent must be \'uk\' or \'us\'' }),
   }).default('us'),
 })

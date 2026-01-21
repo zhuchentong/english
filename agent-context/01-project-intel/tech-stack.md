@@ -41,7 +41,7 @@
 |------|------|------|----------|
 | edge-tts-universal | ^1.3.3 | TTS 发音 | `server/api/tts/words/[id].get.ts` |
 | zod | 4.3.5 | 数据验证 | `server/utils/use-safe-validate.ts` |
-| h3-zod | 0.5.3 | H3 + Zod 集成 | `package.json` |
+
 | tsx | 4.21.0 | 运行 TypeScript | `scripts/prisma.ts` |
 
 ## 环境配置
