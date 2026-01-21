@@ -18,7 +18,7 @@
 | 别名        | 路径          | 示例                                              |
 | ----------- | ------------- | ------------------------------------------------- |
 | `@/`        | `app/`        | `import X from '@/components/...'`                |
-| `~~/server` | `server/`     | `import { prisma } from '~~/server/utils/db'`     |
+| `~~/server` | `server/`     | `import { prisma } from '~~/prisma/client'`     |
 | `~/`        | `app/` (测试) | `import { useBook } from '~/composables/useBook'` |
 
 ## 文件位置速查

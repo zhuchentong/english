@@ -1,8 +1,18 @@
 import { UniversalEdgeTTS } from 'edge-tts-universal'
 import { createError, defineEventHandler } from 'h3'
-import { prisma } from '~~/server/utils/db'
+import z from 'zod'
+import { prisma } from '~~/prisma/client'
 import { useSafeParams, useSafeQuery } from '~~/server/utils/use-safe-validate'
-import { AccentSchema, WordIdSchema } from '~~/server/utils/validate-tts'
+
+export const WordIdSchema = z.object({
+  id: z.coerce.number().int().positive('Word ID must be a positive integer'),
+})
+
+export const AccentSchema = z.object({
+  accent: z.enum(['uk', 'us'], {
+    error: () => ({ message: 'Accent must be \'uk\' or \'us\'' }),
+  }).default('us'),
+})
 
 const VOICE_MAP = {
   uk: 'en-GB-SoniaNeural',

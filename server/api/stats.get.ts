@@ -4,7 +4,7 @@
  */
 
 import { createError, defineEventHandler } from 'h3'
-import { prisma } from '../utils/db'
+import { prisma } from '../../prisma/client'
 
 /**
  * @description 获取网站统计数据

@@ -97,4 +97,7 @@ vi.mock('edge-tts-universal', () => ({
 
 对于 HTTP 请求，推荐 mock 外部 API 依赖模块。
 
-> **参考文档**：[Vitest 指南](https://r.jina.ai/https://vitest.dev/guide/)
+### 参考文档
+
+- [Vitest 指南](https://r.jina.ai/https://vitest.dev/guide/)
+- [Nuxt 测试模块](https://r.jina.ai/https://nuxt.com/docs/getting-started/testing)
