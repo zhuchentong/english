@@ -15,11 +15,11 @@
 
 ## 路径别名速查
 
-| 别名       | 路径          | 示例                                              |
-| ---------- | ------------- | ------------------------------------------------- |
-| `@/`       | `app/`        | `import X from '@/components/...'`                |
-| `@/server` | `server/`     | `import { prisma } from '@/server/utils/db'`      |
-| `~/`       | `app/` (测试) | `import { useBook } from '~/composables/useBook'` |
+| 别名        | 路径          | 示例                                              |
+| ----------- | ------------- | ------------------------------------------------- |
+| `@/`        | `app/`        | `import X from '@/components/...'`                |
+| `~~/server` | `server/`     | `import { prisma } from '~~/server/utils/db'`     |
+| `~/`        | `app/` (测试) | `import { useBook } from '~/composables/useBook'` |
 
 ## 文件位置速查
 

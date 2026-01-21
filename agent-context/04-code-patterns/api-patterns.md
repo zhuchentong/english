@@ -62,8 +62,8 @@ interface PaginatedResponse<T> {
 
 ```typescript
 // server/api/tts/words/[id].get.ts
-import { useSafeParams, useSafeQuery } from '@/server/utils/use-safe-validate'
-import { AccentSchema, WordIdSchema } from '@/server/utils/validate-tts'
+import { useSafeParams, useSafeQuery } from '~~/server/utils/use-safe-validate'
+import { AccentSchema, WordIdSchema } from '~~/server/utils/validate-tts'
 
 const { id } = await useSafeParams(event, WordIdSchema)
 const { accent } = await useSafeQuery(event, AccentSchema)

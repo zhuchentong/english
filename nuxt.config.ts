@@ -4,9 +4,6 @@ import { fileURLToPath } from 'node:url'
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
-  runtimeConfig: {
-    databaseUrl: '',
-  },
   modules: [
     '@nuxt/eslint',
     '@nuxt/test-utils/module',
@@ -16,12 +13,6 @@ export default defineNuxtConfig({
   tdesign: {
     resolveIcons: false,
     importVariables: true,
-  },
-  alias: {
-    '@': fileURLToPath(new URL('./app', import.meta.url)),
-    '@@': fileURLToPath(new URL('.', import.meta.url)),
-    '@/server': fileURLToPath(new URL('./server', import.meta.url)),
-    '@/test': fileURLToPath(new URL('./test', import.meta.url)),
   },
   typescript: {
     strict: true,

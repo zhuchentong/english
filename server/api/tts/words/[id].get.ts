@@ -1,8 +1,8 @@
 import { UniversalEdgeTTS } from 'edge-tts-universal'
 import { createError, defineEventHandler } from 'h3'
-import { prisma } from '@/server/utils/db'
-import { useSafeParams, useSafeQuery } from '@/server/utils/use-safe-validate'
-import { AccentSchema, WordIdSchema } from '@/server/utils/validate-tts'
+import { prisma } from '~~/server/utils/db'
+import { useSafeParams, useSafeQuery } from '~~/server/utils/use-safe-validate'
+import { AccentSchema, WordIdSchema } from '~~/server/utils/validate-tts'
 
 const VOICE_MAP = {
   uk: 'en-GB-SoniaNeural',

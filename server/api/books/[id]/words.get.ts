@@ -1,7 +1,7 @@
 import type { Prisma } from '@prisma/client'
 import { createError, defineEventHandler } from 'h3'
-import { prisma } from '../../../utils/db'
-import { definePageBuilder } from '../../../utils/define-page-builder'
+import { prisma } from '~~/server/utils/db'
+import { definePageBuilder } from '~~/server/utils/define-page-builder'
 
 type BookItemWithWord = Prisma.BookItemGetPayload<{
   include: {
