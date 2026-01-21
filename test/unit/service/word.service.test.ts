@@ -1,3 +1,4 @@
+import type { Word } from '@prisma/client'
 import type { PageBuilderOptions } from '../../../server/utils/define-page-builder'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { prisma } from '../../../prisma/client'
@@ -41,7 +42,7 @@ describe('测试 word.service', () => {
     })
     bookWithoutWordsId = book2.id
 
-    const createdWords = []
+    const createdWords: Word[] = []
     for (let i = 1; i <= 10; i++) {
       const word = await prisma.word.create({
         data: {

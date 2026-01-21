@@ -6,7 +6,7 @@ import { PageBuilder } from '../../../server/utils/define-page-builder'
 
 describe('测试 book.service', () => {
   let testUserId: number
-  let bookIds: number[] = []
+  let _bookIds: number[] = []
 
   async function createTestBooks(count: number, startIndex: number = 0) {
     const books = []
@@ -36,7 +36,7 @@ describe('测试 book.service', () => {
     testUserId = user.id
 
     const books = await createTestBooks(5, 1)
-    bookIds = books.map(b => b.id)
+    _bookIds = books.map(b => b.id)
   })
 
   afterAll(async () => {
