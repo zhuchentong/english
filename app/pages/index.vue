@@ -1,44 +1,54 @@
+<script setup lang="ts">
+/**
+ * @file Dashboard 首页
+ * @description 网站数据概览页面，展示单词数量和单词书数量统计
+ */
+
+const { data: stats, pending } = await useFetch('/api/stats')
+
+const wordCount = computed(() => stats.value?.wordCount ?? 0)
+const bookCount = computed(() => stats.value?.bookCount ?? 0)
+</script>
+
 <template>
   <div class="mx-auto max-w-5xl p-6">
-    <t-space direction="vertical" size="large">
-      <t-card title="TDesign 集成示例">
-        <t-space>
-          <t-button theme="primary">
-            主要按钮
-          </t-button>
-          <t-button theme="default">
-            默认按钮
-          </t-button>
-          <t-button theme="default" variant="outline">
-            轮廓按钮
-          </t-button>
-          <t-button theme="default" variant="dashed">
-            虚线按钮
-          </t-button>
-        </t-space>
+    <h1 class="mb-6 text-2xl text-gray-800 font-bold">
+      数据概览
+    </h1>
+
+    <t-space size="large">
+      <t-card class="w-72">
+        <div class="flex items-center gap-4">
+          <div class="h-14 w-14 flex-center rounded-lg bg-primary/10">
+            <t-icon name="book" size="28" class="text-primary" />
+          </div>
+          <div>
+            <div class="text-sm text-gray-600">
+              单词数量
+            </div>
+            <div v-if="pending" class="mt-1 h-8 w-16 animate-pulse rounded bg-gray-200" />
+            <div v-else class="mt-1 text-2xl text-gray-800 font-bold">
+              {{ wordCount }}
+            </div>
+          </div>
+        </div>
       </t-card>
 
-      <t-alert theme="success" message="TDesign 已成功集成到项目中！" />
-
-      <t-card title="UnoCSS 集成示例">
-        <t-space direction="vertical">
-          <div class="flex gap-4">
-            <div class="h-16 w-16 rounded-lg bg-red-500" />
-            <div class="h-16 w-16 rounded-full bg-blue-500" />
-            <div class="h-16 w-16 border-2 border-gray-300 bg-green-500" />
+      <t-card class="w-72">
+        <div class="flex items-center gap-4">
+          <div class="h-14 w-14 flex-center rounded-lg bg-green-100">
+            <t-icon name="books" size="28" class="text-green-600" />
           </div>
-
-          <div class="mt-4 text-xl text-gray-800 font-bold">
-            原子化 CSS 示例
+          <div>
+            <div class="text-sm text-gray-600">
+              单词书数量
+            </div>
+            <div v-if="pending" class="mt-1 h-8 w-16 animate-pulse rounded bg-gray-200" />
+            <div v-else class="mt-1 text-2xl text-gray-800 font-bold">
+              {{ bookCount }}
+            </div>
           </div>
-          <div class="text-sm text-gray-600">
-            使用 UnoCSS 快速构建样式
-          </div>
-
-          <div class="mt-2 flex-center rounded bg-gray-100 p-4">
-            <span class="text-primary-600">Flex 居中对齐</span>
-          </div>
-        </t-space>
+        </div>
       </t-card>
     </t-space>
   </div>
