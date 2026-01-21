@@ -7,7 +7,7 @@ export interface PageBuilderOptions {
   pageSize: number
 }
 
-const PageLikeSchema = z.object({
+export const PageLikeSchema = z.object({
   pageIndex: z.coerce.number().int().min(0).optional().default(0),
   pageSize: z.coerce.number().int().min(1).max(100).optional().default(10),
 })
@@ -25,7 +25,7 @@ async function getPageBuilderOptions(event: H3Event | PageBuilderOptions): Promi
   }
 }
 
-class PageBuilder {
+export class PageBuilder {
   constructor(private readonly options: PageBuilderOptions) {}
 
   toPageArgs() {

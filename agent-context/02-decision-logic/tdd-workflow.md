@@ -48,9 +48,10 @@ export default defineEventHandler(async (event) => {
 
 ## 测试命名规范
 
-- 描述期望行为: `should return paginated books with default parameters`
-- 边界测试: `should handle custom pagination parameters`
-- 空状态测试: `should return empty array when no books exist`
+- describe 和 it 必须使用中文命名（详见 [测试模式](../04-code-patterns/testing-patterns.md)）
+- 描述期望行为: `应该返回默认分页参数的书籍列表`
+- 边界测试: `应该正确处理自定义分页参数`
+- 空状态测试: `当没有书籍时应该返回空数组`
 
 ## 运行测试
 
