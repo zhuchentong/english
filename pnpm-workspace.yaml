@@ -1,5 +1,6 @@
 publicHoistPattern:
   - h3
+  - vite
 
 shellEmulator: true
 

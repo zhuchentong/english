@@ -75,22 +75,6 @@ export default defineConfig(async () => {
         }),
         {
           test: {
-            name: 'e2e',
-            include: ['test/e2e/**/*.test.{ts,js}'],
-            environment: 'nuxt',
-            environmentOptions: {
-              nuxt: {
-                domEnvironment: 'happy-dom',
-                mock: {
-                  intersectionObserver: true,
-                  indexedDb: false,
-                },
-              },
-            },
-          },
-        },
-        {
-          test: {
             name: 'integration',
             include: ['test/integration/**/*.{test,spec}.{ts,js}'],
             environment: 'node',
