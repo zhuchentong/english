@@ -1,11 +1,17 @@
 import type { UserWorkspaceConfig } from 'vitest/config'
 import { fileURLToPath } from 'node:url'
+import { defineVitestProject } from '@nuxt/test-utils/config'
 import { defineConfig } from 'vitest/config'
 
-const rootDir = fileURLToPath(new URL('.', import.meta.url))
+const serverDir = fileURLToPath(new URL('./server', import.meta.url))
 
 export default defineConfig(async () => {
   return {
+    resolve: {
+      alias: {
+        '@/server': serverDir,
+      },
+    },
     test: {
       globals: true,
       setupFiles: ['./test/vitest.setup.ts'],
@@ -41,12 +47,23 @@ export default defineConfig(async () => {
       projects: [
         {
           test: {
+            name: 'unit',
+            include: ['test/unit/**/*.{test,spec}.{ts,js}'],
+            environment: 'node',
+            resolve: {
+              alias: {
+                '@/server': serverDir,
+              },
+            },
+          },
+        },
+        await defineVitestProject({
+          test: {
             name: 'nuxt',
             include: ['test/nuxt/**/*.{test,spec}.{ts,js}'],
             environment: 'nuxt',
             environmentOptions: {
               nuxt: {
-                rootDir,
                 domEnvironment: 'happy-dom',
                 mock: {
                   intersectionObserver: true,
@@ -55,14 +72,7 @@ export default defineConfig(async () => {
               },
             },
           },
-        },
-        {
-          test: {
-            name: 'unit',
-            include: ['test/unit/**/*.{test,spec}.{ts,js}'],
-            environment: 'node',
-          },
-        },
+        }),
         {
           test: {
             name: 'e2e',
@@ -75,6 +85,11 @@ export default defineConfig(async () => {
             name: 'integration',
             include: ['test/integration/**/*.{test,spec}.{ts,js}'],
             environment: 'node',
+            resolve: {
+              alias: {
+                '@/server': serverDir,
+              },
+            },
           },
         },
       ],

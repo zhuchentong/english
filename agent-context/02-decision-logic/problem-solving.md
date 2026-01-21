@@ -11,31 +11,35 @@
 ## 常见问题类型处理
 
 ### 编译错误
+
 - 检查依赖版本和导入语句
 - 确认 TypeScript 类型定义
 - 验证路径别名使用
 
 ### 运行时错误
+
 - 查看相关模块的日志输出
 - 检查 API 路由错误处理
 - 验证数据库连接和 Prisma 查询
 
 ### 性能问题
+
 - 分析数据库查询（N+1 问题）
 - 检查网络请求（useFetch 使用）
 - 验证分页参数传递
 
 ### 测试失败
+
 - 检查测试隔离（beforeEach 清理）
 - 验证 mock 数据正确性
 - 确认测试环境配置
 
 ## 问题定位路径
 
-| 问题类型 | 首先检查 |
-|----------|----------|
-| 数据库相关 | `server/utils/db.ts`, API 路由 |
-| 前端状态 | `app/composables/`, 组件 |
-| API 调用 | `server/api/`, useFetch |
-| 样式问题 | `app/app.vue` (CSS Reset), 组件样式 |
-| 路由问题 | `app/pages/` 文件路由 |
+| 问题类型   | 首先检查                            |
+| ---------- | ----------------------------------- |
+| 数据库相关 | `server/utils/db.ts`, API 路由      |
+| 前端状态   | `app/composables/`, 组件            |
+| API 调用   | `server/api/`, useFetch             |
+| 样式问题   | `app/app.vue` (CSS Reset), 组件样式 |
+| 路由问题   | `app/pages/` 文件路由               |

@@ -9,6 +9,7 @@
 ## 智能体上下文文档索引
 
 ### 1. 项目情报（智能体必须优先阅读）
+
 - [项目概述](./agent-context/01-project-intel/overview.md)
 - [架构设计](./agent-context/01-project-intel/architecture.md)
 - [技术栈说明](./agent-context/01-project-intel/tech-stack.md)
@@ -16,12 +17,14 @@
 - [关键文件位置](./agent-context/01-project-intel/key-files.md)
 
 ### 2. 决策逻辑
+
 - [问题解决流程](./agent-context/02-decision-logic/problem-solving.md)
 - [代码审查指南](./agent-context/02-decision-logic/code-review.md)
 - [架构决策记录](./agent-context/02-decision-logic/architecture-decisions.md)
 - [TDD 工作流程](./agent-context/02-decision-logic/tdd-workflow.md)
 
 ### 3. 工具指南
+
 - [Nuxt 4 开发指南](./agent-context/03-tool-guides/nuxt-guide.md)
 - [Prisma 开发指南](./agent-context/03-tool-guides/prisma-guide.md)
 - [TDesign 使用指南](./agent-context/03-tool-guides/tdesign-guide.md)
@@ -30,6 +33,7 @@
 - [测试指南](./agent-context/03-tool-guides/testing-guide.md)
 
 ### 4. 代码模式
+
 - [错误处理模式](./agent-context/04-code-patterns/error-handling.md)
 - [API 设计模式](./agent-context/04-code-patterns/api-patterns.md)
 - [Composables 模式](./agent-context/04-code-patterns/composable-patterns.md)
@@ -37,11 +41,13 @@
 - [测试模式](./agent-context/04-code-patterns/testing-patterns.md)
 
 ### 5. 工作流程
+
 - [开发流程](./agent-context/05-workflows/development.md)
 - [调试流程](./agent-context/05-workflows/debugging.md)
 - [部署流程](./agent-context/05-workflows/deployment.md)
 
 ### 6. 快速参考
+
 - [速查表](./agent-context/06-reference/cheatsheet.md)
 - [系统命令参考](./agent-context/06-reference/terminal-commands.md)
 - [常见错误及解决](./agent-context/06-reference/common-errors.md)
@@ -57,11 +63,13 @@
 **数据库**: PostgreSQL + Prisma 7.2.0
 
 **文档优先级**:
+
 1. `agent-context/01-project-intel/` - 理解项目基础
 2. `agent-context/03-tool-guides/` - 掌握开发工具
 3. `agent-context/04-code-patterns/` - 遵循代码规范
 
 **特殊指令**:
+
 - 所有代码必须符合项目编码规范
 - 所有代码必须包含详细的中文注释，注释需符合 JSDOC 规范：
   - 函数/方法必须包含 @description、@param、@returns 标签
@@ -79,11 +87,11 @@
 
 ## 核心命令速查
 
-| 命令 | 说明 |
-|------|------|
-| `pnpm dev` | 启动开发服务器 |
-| `pnpm test` | 运行所有测试 |
-| `pnpm lint` | ESLint 检查 |
-| `tsx ./scripts/prisma.ts push` | 同步数据库 |
+| 命令                           | 说明           |
+| ------------------------------ | -------------- |
+| `pnpm dev`                     | 启动开发服务器 |
+| `pnpm test`                    | 运行所有测试   |
+| `pnpm lint`                    | ESLint 检查    |
+| `tsx ./scripts/prisma.ts push` | 同步数据库     |
 
 > **重要提示**：在执行任何系统命令（如 `ls`、`dir`、`cat`、`type` 等）前，请先阅读 [系统命令参考](./agent-context/06-reference/terminal-commands.md)，确保使用当前操作系统的正确命令。

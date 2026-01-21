@@ -38,15 +38,16 @@
 
 ## 核心组件
 
-| 组件 | 位置 | 职责 |
-|------|------|------|
-| 页面路由 | `app/pages/` | 文件路由、页面组件 |
-| 组合式函数 | `app/composables/` | 状态管理、业务逻辑 |
+| 组件       | 位置                        | 职责                    |
+| ---------- | --------------------------- | ----------------------- |
+| 页面路由   | `app/pages/`                | 文件路由、页面组件      |
+| 组合式函数 | `app/composables/`          | 状态管理、业务逻辑      |
 | 工作区组件 | `app/components/workspace/` | Header、Sidebar、Footer |
-| API 路由 | `server/api/` | RESTful 端点 |
-| 数据库访问 | `server/utils/db.ts` | Prisma 单例 |
+| API 路由   | `server/api/`               | RESTful 端点            |
+| 数据库访问 | `server/utils/db.ts`        | Prisma 单例             |
 
 ## 数据流
+
 1. 前端通过 `useFetch` 调用 API 路由
 2. H3 路由处理请求，访问 Prisma 单例
 3. Prisma 与 PostgreSQL 交互返回数据

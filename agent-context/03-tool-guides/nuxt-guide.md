@@ -4,10 +4,10 @@
 
 Nuxt 4 使用 `app/pages/` 目录实现基于文件的路由：
 
-| 文件路径 | 路由路径 | 说明 |
-|----------|----------|------|
-| `app/pages/index.vue` | `/` | 首页 |
-| `app/pages/books/index.vue` | `/books` | 单词书列表 |
+| 文件路径                         | 路由路径     | 说明       |
+| -------------------------------- | ------------ | ---------- |
+| `app/pages/index.vue`            | `/`          | 首页       |
+| `app/pages/books/index.vue`      | `/books`     | 单词书列表 |
 | `app/pages/books/[id]/index.vue` | `/books/:id` | 单词书详情 |
 
 > **参考文档**：[Nuxt 4 文档](https://nuxt.com/llms-full.txt)
@@ -17,6 +17,7 @@ Nuxt 4 使用 `app/pages/` 目录实现基于文件的路由：
 Nuxt 4 自动导入以下内容：
 
 ### Vue APIs
+
 ```vue
 <script setup lang="ts">
 // 以下无需导入，直接使用
@@ -32,7 +33,9 @@ onMounted(() => {
 ```
 
 ### Composables
+
 `app/composables/` 目录下的所有函数自动导入：
+
 ```typescript
 // useBook.ts
 export const useBook = () => {
@@ -46,11 +49,11 @@ const { books } = useBook()
 
 ### 路径别名
 
-| 别名 | 路径 | 使用场景 |
-|------|------|----------|
-| `@/` | `app/` | 源码导入 |
-| `~/` | `app/` | 测试环境推荐 |
-| `@/server` | `server/` | 服务器代码 |
+| 别名       | 路径      | 使用场景     |
+| ---------- | --------- | ------------ |
+| `@/`       | `app/`    | 源码导入     |
+| `~/`       | `app/`    | 测试环境推荐 |
+| `@/server` | `server/` | 服务器代码   |
 
 ## 布局系统
 

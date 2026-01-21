@@ -12,6 +12,7 @@ import '@unocss/reset/tailwind-compat.css'
 ```
 
 Reset 类型: `tailwind-compat`
+
 - 兼容 TDesign 等 UI 框架
 - 移除浏览器默认样式
 - 确保布局高度计算正确
@@ -29,15 +30,15 @@ Reset 类型: `tailwind-compat`
 
 ## 常用类
 
-| 类名 | 说明 |
-|------|------|
-| `p-4` | 内边距 |
-| `m-4` | 外边距 |
-| `bg-white` | 背景色 |
-| `rounded` | 圆角 |
-| `shadow` | 阴影 |
-| `text-xl` | 字体大小 |
+| 类名        | 说明     |
+| ----------- | -------- |
+| `p-4`       | 内边距   |
+| `m-4`       | 外边距   |
+| `bg-white`  | 背景色   |
+| `rounded`   | 圆角     |
+| `shadow`    | 阴影     |
+| `text-xl`   | 字体大小 |
 | `font-bold` | 字体加粗 |
-| `flex` | 弹性布局 |
+| `flex`      | 弹性布局 |
 
 > **参考文档**：[UnoCSS 文档](https://r.jina.ai/https://unocss.dev/)

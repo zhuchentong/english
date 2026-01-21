@@ -3,6 +3,7 @@
 ## 常见问题诊断
 
 ### 数据库连接问题
+
 ```bash
 # 检查环境变量
 echo %NUXT_DATABASE_URL%
@@ -12,6 +13,7 @@ tsx ./scripts/prisma.ts studio --env=test
 ```
 
 ### API 调试
+
 ```bash
 # 启动开发服务器
 pnpm dev
@@ -21,6 +23,7 @@ curl http://localhost:3000/api/books
 ```
 
 ### 前端调试
+
 - 打开浏览器开发者工具 (F12)
 - 查看 Network 面板检查 API 调用
 - 查看 Console 面板检查错误
@@ -28,6 +31,7 @@ curl http://localhost:3000/api/books
 ## 日志输出
 
 ### 服务器端日志
+
 ```typescript
 // server/api/books.get.ts
 export default defineEventHandler(async (event) => {

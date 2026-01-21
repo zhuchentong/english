@@ -49,12 +49,12 @@ interface PaginatedResponse<T> {
 
 ## API 端点列表
 
-| 端点 | 方法 | 说明 |
-|------|------|------|
-| `/api/books` | GET | 获取单词书列表（分页） |
-| `/api/books/:id` | GET | 获取单个单词书 |
-| `/api/books/:id/words` | GET | 获取单词书单词列表 |
-| `/api/tts/words/:id` | GET | 获取单词发音（音频） |
+| 端点                   | 方法 | 说明                   |
+| ---------------------- | ---- | ---------------------- |
+| `/api/books`           | GET  | 获取单词书列表（分页） |
+| `/api/books/:id`       | GET  | 获取单个单词书         |
+| `/api/books/:id/words` | GET  | 获取单词书单词列表     |
+| `/api/tts/words/:id`   | GET  | 获取单词发音（音频）   |
 
 ## 参数验证
 

@@ -17,11 +17,11 @@ describe('books API (GET /api/books)', () => {
   it('should return paginated books with default parameters', async () => {
     // Arrange
     const event = createMockEvent('http://localhost:3000/api/books?pageIndex=0&pageSize=50')
-    
+
     // Act
     const handler = (await import('../../../server/api/books.get')).default
     const result = await handler(event)
-    
+
     // Assert
     expect(result).toHaveProperty('content')
     expect(result).toHaveProperty('pageIndex')
@@ -56,9 +56,9 @@ describe('useBook Composable', () => {
 
 ## 测试文件组织
 
-| 类型 | 位置 | 说明 |
-|------|------|------|
-| Unit | `test/unit/` | API handlers、工具函数 |
-| Nuxt | `test/nuxt/` | Composables、组件 |
-| Integration | `test/integration/` | 真实外部服务调用 |
-| E2E | `test/e2e/` | 端到端测试（暂时跳过） |
+| 类型        | 位置                | 说明                   |
+| ----------- | ------------------- | ---------------------- |
+| Unit        | `test/unit/`        | API handlers、工具函数 |
+| Nuxt        | `test/nuxt/`        | Composables、组件      |
+| Integration | `test/integration/` | 真实外部服务调用       |
+| E2E         | `test/e2e/`         | 端到端测试（暂时跳过） |

@@ -30,6 +30,7 @@ if (process.env.NODE_ENV !== 'production') {
 ```
 
 **使用方式**（无需导入，直接使用）：
+
 ```typescript
 // server/api/books.get.ts
 export default defineEventHandler(async (event) => {
@@ -50,12 +51,12 @@ await prisma.$transaction(async (tx) => {
 
 ## 迁移命令
 
-| 命令 | 用途 |
-|------|------|
-| `tsx ./scripts/prisma.ts generate` | 生成 Prisma Client |
-| `tsx ./scripts/prisma.ts push` | 同步到开发数据库 |
-| `tsx ./scripts/prisma.ts push --env=test` | 同步到测试数据库 |
-| `tsx ./scripts/prisma.ts migrate dev` | 创建迁移（生产） |
+| 命令                                      | 用途               |
+| ----------------------------------------- | ------------------ |
+| `tsx ./scripts/prisma.ts generate`        | 生成 Prisma Client |
+| `tsx ./scripts/prisma.ts push`            | 同步到开发数据库   |
+| `tsx ./scripts/prisma.ts push --env=test` | 同步到测试数据库   |
+| `tsx ./scripts/prisma.ts migrate dev`     | 创建迁移（生产）   |
 
 ## 注意事项
 

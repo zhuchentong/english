@@ -3,7 +3,9 @@
 ## TDD 三步循环
 
 ### 1. RED (红)
+
 编写失败的测试
+
 ```typescript
 // test/unit/api/books.test.ts
 it('should return paginated books with default parameters', async () => {
@@ -12,7 +14,9 @@ it('should return paginated books with default parameters', async () => {
 ```
 
 ### 2. GREEN (绿)
+
 编写最小代码使测试通过
+
 ```typescript
 // server/api/books.get.ts
 export default defineEventHandler(async () => {
@@ -21,7 +25,9 @@ export default defineEventHandler(async () => {
 ```
 
 ### 3. REFACTOR (重构)
+
 重构代码，保持测试通过
+
 ```typescript
 // 添加实际业务逻辑
 export default defineEventHandler(async (event) => {
@@ -48,8 +54,8 @@ export default defineEventHandler(async (event) => {
 
 ## 运行测试
 
-| 命令 | 说明 |
-|------|------|
-| `pnpm test` | 运行所有测试 |
-| `pnpm test:watch` | 监听模式 |
+| 命令                         | 说明               |
+| ---------------------------- | ------------------ |
+| `pnpm test`                  | 运行所有测试       |
+| `pnpm test:watch`            | 监听模式           |
 | `pnpm test --grep "pattern"` | 运行匹配模式的测试 |

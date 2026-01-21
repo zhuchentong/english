@@ -21,6 +21,7 @@ export default defineConfig({
 ## 测试工具函数
 
 ### createMockEvent
+
 创建模拟 H3 事件对象用于 unit 测试：
 
 ```typescript
@@ -40,6 +41,7 @@ export function createMockEvent(url: string, options?: { method?: string; body?:
 ```
 
 ### resetDB
+
 重置测试数据库：
 
 ```typescript
@@ -62,19 +64,19 @@ export async function resetDB() {
 
 ## 测试环境隔离
 
-| 环境 | 数据库 | 配置文件 |
-|------|--------|----------|
-| 开发 | `english` | `.env` |
+| 环境 | 数据库         | 配置文件    |
+| ---- | -------------- | ----------- |
+| 开发 | `english`      | `.env`      |
 | 测试 | `english_test` | `.env.test` |
 
 ## 运行测试
 
-| 命令 | 说明 |
-|------|------|
-| `pnpm test` | 运行所有测试 |
-| `pnpm test --project unit` | 仅 unit 测试 |
-| `pnpm test --project nuxt` | 仅 nuxt 测试 |
-| `pnpm test:watch` | 监听模式 |
+| 命令                         | 说明               |
+| ---------------------------- | ------------------ |
+| `pnpm test`                  | 运行所有测试       |
+| `pnpm test --project unit`   | 仅 unit 测试       |
+| `pnpm test --project nuxt`   | 仅 nuxt 测试       |
+| `pnpm test:watch`            | 监听模式           |
 | `pnpm test --grep "pattern"` | 运行匹配模式的测试 |
 
 ## Mock 外部依赖

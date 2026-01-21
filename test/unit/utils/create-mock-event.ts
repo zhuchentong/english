@@ -11,6 +11,9 @@ export function createMockEvent(
     method,
     ...(body && { body: JSON.stringify(body) }),
   })
-  const event = new H3Event(req, { params: params || {} })
+  const event = new H3Event(req, {
+    params: params || {},
+    ...(params && { context: { params } }),
+  })
   return event
 }
