@@ -1,10 +1,10 @@
+import type { PageBuilderOptions } from '../../../server/utils/define-page-builder'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { prisma } from '../../../prisma/client'
-import { getBookList, getBookCount, getBookById, bookExists } from '../../../server/service/book.service'
-import type { PageBuilderOptions } from '../../../server/utils/define-page-builder'
+import { bookExists, getBookById, getBookCount, getBookList } from '../../../server/service/book.service'
 import { PageBuilder } from '../../../server/utils/define-page-builder'
 
-describe('书籍 Service 测试', () => {
+describe('测试 book.service', () => {
   let testUserId: number
   let bookIds: number[] = []
 
@@ -70,7 +70,7 @@ describe('书籍 Service 测试', () => {
 
       expect(Array.isArray(result)).toBe(true)
       expect(result.length).toBeLessThanOrEqual(10)
-      result.forEach(book => {
+      result.forEach((book) => {
         expect(book).toHaveProperty('id')
         expect(book).toHaveProperty('name')
         expect(book).toHaveProperty('description')

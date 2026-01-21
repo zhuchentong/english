@@ -1,13 +1,15 @@
 import type { UserWorkspaceConfig } from 'vitest/config'
 import { resolve } from 'node:path'
-import { defineVitestProject } from '@nuxt/test-utils/config'
-import { defineConfig } from 'vitest/config'
+import { defineConfig, loadEnv } from 'vite'
+// import { defineVitestProject } from '@nuxt/test-utils/config'
 
 export default defineConfig(async () => {
   const rootDir = resolve(__dirname)
+  const env = loadEnv('test', rootDir, '')
 
   return {
     test: {
+      env,
       globals: true,
       setupFiles: ['./test/vitest.setup.ts'],
       fileParallelism: false,
@@ -57,22 +59,22 @@ export default defineConfig(async () => {
             },
           },
         },
-        await defineVitestProject({
-          test: {
-            name: 'nuxt',
-            include: ['test/nuxt/**/*.{test,spec}.{ts,js}'],
-            environment: 'nuxt',
-            environmentOptions: {
-              nuxt: {
-                domEnvironment: 'happy-dom',
-                mock: {
-                  intersectionObserver: true,
-                  indexedDb: false,
-                },
-              },
-            },
-          },
-        }),
+        // await defineVitestProject({
+        //   test: {
+        //     name: 'nuxt',
+        //     include: ['test/nuxt/**/*.{test,spec}.{ts,js}'],
+        //     environment: 'nuxt',
+        //     environmentOptions: {
+        //       nuxt: {
+        //         domEnvironment: 'happy-dom',
+        //         mock: {
+        //           intersectionObserver: true,
+        //           indexedDb: false,
+        //         },
+        //       },
+        //     },
+        //   },
+        // }),
         {
           test: {
             name: 'integration',

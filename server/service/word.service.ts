@@ -42,11 +42,10 @@ export function getWordsCountByBookId(bookId: number) {
   return prisma.bookItem.count({ where: { bookId } })
 }
 
-
 /**
  * @description 获取单词总数
  * @returns {Promise<number>} 单词总数
  */
 export function getWordsCount() {
-  return prisma.bookItem.count()
+  return prisma.word.count()
 }

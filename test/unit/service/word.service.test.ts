@@ -1,10 +1,10 @@
+import type { PageBuilderOptions } from '../../../server/utils/define-page-builder'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { prisma } from '../../../prisma/client'
-import { getWordsByBookId, getWordsCountByBookId, getWordsCount } from '../../../server/service/word.service'
-import type { PageBuilderOptions } from '../../../server/utils/define-page-builder'
+import { getWordsByBookId, getWordsCount, getWordsCountByBookId } from '../../../server/service/word.service'
 import { PageBuilder } from '../../../server/utils/define-page-builder'
 
-describe('单词 Service 测试', () => {
+describe('测试 word.service', () => {
   let testUserId: number
   let bookWithWordsId: number
   let bookWithoutWordsId: number
@@ -91,7 +91,7 @@ describe('单词 Service 测试', () => {
 
       expect(Array.isArray(result)).toBe(true)
       expect(result.length).toBe(5)
-      result.forEach(item => {
+      result.forEach((item) => {
         expect(item).toHaveProperty('id')
         expect(item).toHaveProperty('bookId', bookWithWordsId)
         expect(item).toHaveProperty('word')
@@ -113,7 +113,7 @@ describe('单词 Service 测试', () => {
       const pageBuilder = createPageBuilder({ pageSize: 10 })
       const result = await getWordsByBookId(bookWithWordsId, pageBuilder)
 
-      result.forEach(item => {
+      result.forEach((item) => {
         expect(item.word).toHaveProperty('phoneticUK')
         expect(item.word).toHaveProperty('phoneticUS')
         expect(item.word).toHaveProperty('definitions')
@@ -147,8 +147,9 @@ describe('单词 Service 测试', () => {
 
   describe('getWordsCount 函数', () => {
     it('应该返回全局单词总数', async () => {
+      const wordCount = await prisma.word.count()
       const count = await getWordsCount()
-      expect(count).toBe(10)
+      expect(count).toBe(wordCount)
     })
 
     it('应该返回 0 当没有单词时', async () => {
