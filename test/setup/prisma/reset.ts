@@ -1,4 +1,4 @@
-import { prisma } from '../../prisma/client'
+import { prisma } from '../../../prisma/client'
 
 /**
  * 重置测试数据库

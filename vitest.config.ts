@@ -1,8 +1,11 @@
 import type { UserWorkspaceConfig } from 'vitest/config'
+import { resolve } from 'node:path'
 import { defineVitestProject } from '@nuxt/test-utils/config'
 import { defineConfig } from 'vitest/config'
 
 export default defineConfig(async () => {
+  const rootDir = resolve(__dirname)
+
   return {
     test: {
       globals: true,
@@ -10,6 +13,11 @@ export default defineConfig(async () => {
       fileParallelism: false,
       testTimeout: 30000,
       hookTimeout: 30000,
+      resolve: {
+        alias: {
+          '~~/': `${rootDir}/`,
+        },
+      },
       deps: {
         moduleDirectories: ['node_modules', 'app'],
         interopDefault: true,
@@ -38,10 +46,15 @@ export default defineConfig(async () => {
       reporters: ['verbose'],
       projects: [
         {
-          test: {
-            name: 'unit',
-            include: ['test/unit/**/*.{test,spec}.{ts,js}'],
-            environment: 'node',
+          name: 'unit',
+          include: ['test/unit/**/*.{test,spec}.{ts,js}'],
+          environment: 'node',
+          resolve: {
+            alias: {
+              '~~/': `${rootDir}/`,
+              '~': `${rootDir}/`,
+              '@': `${rootDir}/`,
+            },
           },
         },
         await defineVitestProject({
@@ -63,8 +76,17 @@ export default defineConfig(async () => {
         {
           test: {
             name: 'e2e',
-            include: ['test/e2e/**/*.{test,spec}.{ts,js}'],
-            environment: 'node',
+            include: ['test/e2e/**/*.test.{ts,js}'],
+            environment: 'nuxt',
+            environmentOptions: {
+              nuxt: {
+                domEnvironment: 'happy-dom',
+                mock: {
+                  intersectionObserver: true,
+                  indexedDb: false,
+                },
+              },
+            },
           },
         },
         {
