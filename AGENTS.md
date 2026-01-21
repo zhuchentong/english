@@ -79,6 +79,7 @@
 - 数据库操作使用 Prisma 单例
 - API 响应使用标准化分页格式
 - 遵循 TDD 开发流程
+- 每次修改代码结束请运行 `npm run eslint:fix` 来修复代码样式
 - 当需要查阅第三方库（Vitest/Prisma/H3/Zod/TDesign/UnoCSS）的具体 API 或用法时，
   必须先读取 `agent-context/06-reference/resources.md` 获取在线文档入口
 - 优先访问 resources.md 中的文档链接获取最新、完整的技术细节

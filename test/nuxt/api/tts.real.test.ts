@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest'
-import { prisma } from '../../server/utils/db'
-import { createMockEvent } from '../unit/utils/create-mock-event'
-import { resetDB } from '../unit/utils/reset-db'
+import { prisma } from '../../../server/utils/db'
+import { createMockEvent } from '../../unit/utils/create-mock-event'
+import { resetDB } from '../../unit/utils/reset-db'
 
 describe('tTS Words API (GET /api/tts/words/:id) - Integration Tests (Real)', () => {
   beforeEach(async () => {
@@ -17,7 +17,7 @@ describe('tTS Words API (GET /api/tts/words/:id) - Integration Tests (Real)', ()
       `http://localhost:3000/api/tts/words/${word.id}?accent=us`,
       { id: word.id.toString() },
     )
-    const handler = (await import('../../server/api/tts/words/[id].get')).default
+    const handler = (await import('../../../server/api/tts/words/[id].get')).default
     const result = await handler(event)
 
     expect(result).toBeInstanceOf(Blob)
@@ -34,7 +34,7 @@ describe('tTS Words API (GET /api/tts/words/:id) - Integration Tests (Real)', ()
       `http://localhost:3000/api/tts/words/${word.id}?accent=uk`,
       { id: word.id.toString() },
     )
-    const handler = (await import('../../server/api/tts/words/[id].get')).default
+    const handler = (await import('../../../server/api/tts/words/[id].get')).default
     const result = await handler(event)
 
     expect(result).toBeInstanceOf(Blob)
@@ -56,7 +56,7 @@ describe('tTS Words API (GET /api/tts/words/:id) - Integration Tests (Real)', ()
       { id: word.id.toString() },
     )
 
-    const handler = (await import('../../server/api/tts/words/[id].get')).default
+    const handler = (await import('../../../server/api/tts/words/[id].get')).default
     const audioUS = await handler(eventUS)
     const audioUK = await handler(eventUK)
 
@@ -72,7 +72,7 @@ describe('tTS Words API (GET /api/tts/words/:id) - Integration Tests (Real)', ()
       `http://localhost:3000/api/tts/words/${word.id}?accent=us`,
       { id: word.id.toString() },
     )
-    const handler = (await import('../../server/api/tts/words/[id].get')).default
+    const handler = (await import('../../../server/api/tts/words/[id].get')).default
     const result = await handler(event)
 
     expect(result).toBeInstanceOf(Blob)
@@ -88,7 +88,7 @@ describe('tTS Words API (GET /api/tts/words/:id) - Integration Tests (Real)', ()
       `http://localhost:3000/api/tts/words/${word.id}?accent=us`,
       { id: word.id.toString() },
     )
-    const handler = (await import('../../server/api/tts/words/[id].get')).default
+    const handler = (await import('../../../server/api/tts/words/[id].get')).default
     const result = await handler(event)
     const arrayBuffer = await result.arrayBuffer()
     const data = new Uint8Array(arrayBuffer)
