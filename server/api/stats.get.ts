@@ -4,19 +4,15 @@
  */
 
 import { createError, defineEventHandler } from 'h3'
-import { prisma } from '../../prisma/client'
+import { getBookCount } from '~~/server/service/book.service'
+import { getWordsCount } from '../service/word.service'
 
-/**
- * @description 获取网站统计数据
- * @returns {Promise<{wordCount: number, bookCount: number}>} 统计数据对象
- */
 export default defineEventHandler(async () => {
   try {
     const [wordCount, bookCount] = await Promise.all([
-      prisma.word.count(),
-      prisma.book.count(),
+      getWordsCount(),
+      getBookCount(),
     ])
-
     return { wordCount, bookCount }
   }
   catch (error) {

@@ -1,22 +1,14 @@
 import { createError, defineEventHandler } from 'h3'
-import { prisma } from '../../prisma/client'
-import { definePageBuilder } from '../utils/define-page-builder'
+import { getBookCount, getBookList } from '~~/server/service/book.service'
+import { definePageBuilder } from '~~/server/utils/define-page-builder'
 
 export default defineEventHandler(async (event) => {
   try {
     const pageBuilder = await definePageBuilder(event)
-    const pageArgs = pageBuilder.toPageArgs()
-
     const [data, total] = await Promise.all([
-      prisma.book.findMany({
-        ...pageArgs,
-        orderBy: {
-          createdAt: 'desc',
-        },
-      }),
-      prisma.book.count(),
+      getBookList(pageBuilder),
+      getBookCount(),
     ])
-
     return pageBuilder.toPageResponse(data, total)
   }
   catch (error) {

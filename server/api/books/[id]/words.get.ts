@@ -1,41 +1,7 @@
-import type { Prisma } from '@prisma/client'
 import { createError, defineEventHandler } from 'h3'
-import { prisma } from '~~/prisma/client'
+import { bookExists } from '~~/server/service/book.service'
+import { getWordsByBookId, getWordsCountByBookId } from '~~/server/service/word.service'
 import { definePageBuilder } from '~~/server/utils/define-page-builder'
-
-type BookItemWithWord = Prisma.BookItemGetPayload<{
-  include: {
-    word: {
-      select: {
-        id: true
-        word: true
-        phoneticUK: true
-        phoneticUS: true
-        difficulty: true
-        viewCount: true
-        definitions: {
-          select: {
-            translation: true
-            englishDef: true
-          }
-          take: 1
-        }
-      }
-    }
-  }
-}>
-
-interface WordItem {
-  id: number
-  word: string
-  phoneticUK: string | null
-  phoneticUS: string | null
-  difficulty: number
-  viewCount: number
-  definition: string
-  itemId: number
-  addedAt: string
-}
 
 export default defineEventHandler(async (event) => {
   try {
@@ -48,11 +14,9 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    const bookExists = await prisma.book.findUnique({
-      where: { id },
-    })
+    const exists = await bookExists(id)
 
-    if (!bookExists) {
+    if (!exists) {
       throw createError({
         status: 404,
         statusText: 'Book not found',
@@ -60,54 +24,10 @@ export default defineEventHandler(async (event) => {
     }
 
     const pageBuilder = await definePageBuilder(event)
-    const pageArgs = pageBuilder.toPageArgs()
-
-    const queryResult = await prisma.bookItem.findMany({
-      ...pageArgs,
-      where: {
-        bookId: id,
-      },
-      include: {
-        word: {
-          select: {
-            id: true,
-            word: true,
-            phoneticUK: true,
-            phoneticUS: true,
-            difficulty: true,
-            viewCount: true,
-            definitions: {
-              select: {
-                translation: true,
-                englishDef: true,
-              },
-              take: 1,
-            },
-          },
-        },
-      },
-      orderBy: {
-        addedAt: 'desc',
-      },
-    })
-
-    const total = await prisma.bookItem.count({
-      where: {
-        bookId: id,
-      },
-    })
-
-    const data: WordItem[] = queryResult.map((item: BookItemWithWord) => ({
-      id: item.word.id,
-      word: item.word.word,
-      phoneticUK: item.word.phoneticUK,
-      phoneticUS: item.word.phoneticUS,
-      difficulty: item.word.difficulty,
-      viewCount: item.word.viewCount,
-      definition: item.word.definitions[0]?.translation || '',
-      itemId: item.id,
-      addedAt: item.addedAt.toISOString(),
-    }))
+    const [data, total] = await Promise.all([
+      getWordsByBookId(id, pageBuilder),
+      getWordsCountByBookId(id),
+    ])
 
     return pageBuilder.toPageResponse(data, total)
   }

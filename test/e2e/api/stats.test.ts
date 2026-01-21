@@ -29,7 +29,7 @@ describe('统计 API (GET /api/stats)', async () => {
       create: { email: 'test@example.com', name: '测试用户' },
     })
 
-    const createdBooks = await prisma.book.createMany({
+    const _createdBooks = await prisma.book.createMany({
       data: [
         { userId: user.id, name: '统计书籍1', wordCount: 10 },
         { userId: user.id, name: '统计书籍2', wordCount: 20 },

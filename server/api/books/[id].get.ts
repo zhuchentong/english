@@ -1,5 +1,5 @@
 import { createError, defineEventHandler } from 'h3'
-import { prisma } from '../../../prisma/client'
+import { getBookById } from '~~/server/service/book.service'
 
 export default defineEventHandler(async (event) => {
   try {
@@ -12,9 +12,7 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    const book = await prisma.book.findUnique({
-      where: { id },
-    })
+    const book = await getBookById(id)
 
     if (!book) {
       throw createError({
